@@ -16,7 +16,7 @@
 	--cf-col-9: calc( var( --cf-width-full ) / 4 * 3 );
 	--cf-col-10: calc( var( --cf-width-full ) / 6 * 5 );
 	--cf-col-11: calc( var( --cf-width-full ) / 12 * 7 );
-	--cf-col-12: var( --cf-width-ful );
+	--cf-col-12: var( --cf-width-full );
 	--cf-top: calc(50vh - var( --cf-col-1 ) * 2.25 );
 
 	/* colour */
@@ -28,9 +28,15 @@
 	--cf-color-white: #FFF;
 }
 
-@media (min-width: 1920px) {
+@media (min-aspect-ratio: 192/90) {
 	:root {
-		--cf-width-full: 1920px;
+		--cf-width-full: calc(100vh / 90 * 192);
+	}
+}
+
+@media (min-aspect-ratio: 7/10) and (max-aspect-ratio: 1/1) {
+	:root {
+		--cf-width-full: calc(100vh / 10 * 7);
 	}
 }
 
@@ -55,7 +61,7 @@ a:visited {
 
 body {
 	margin: 0 auto;
-	max-width: 1920px;
+	width: var( --cf-width-full );
 	padding: 0;
 	position:  relative;
 }
@@ -98,9 +104,8 @@ p {
 /* CLASSES */
 
 .page-content {
-	max-width: 1920px;
-	position: relative;
 	width: 100%;
+	position: relative;
 	z-index: 0;
 }
 
@@ -169,6 +174,7 @@ p {
 	align-items: center;
 	bottom: calc( var( --cf-col-half ) * 0.8 );
 	display: flex;
+	justify-content: flex-end;
 	position: absolute;
 	right: var( --cf-col-half );
 }
@@ -177,13 +183,21 @@ p {
 	font-size: calc( var( --cf-unit ) * 1.5 );
 	font-weight: 300;
 	letter-spacing: 0.05em;
-	margin-right: var( --cf-unit );
 	text-transform: uppercase;
 }
 .copyright-c {
 	font-family: sans-serif;
-	font-size: 0.9em;
+	font-size: 0.95em;
 }
 .copyright-logo {
+	margin-left: var( --cf-unit );
 	width: calc( var( --cf-unit ) * 3 );
+}
+
+
+
+/* RESPONSIVE */
+
+@media (min-aspect-ratio: 7/10) and (max-aspect-ratio: 1/1) {
+
 }
