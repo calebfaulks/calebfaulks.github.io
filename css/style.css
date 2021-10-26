@@ -73,9 +73,10 @@ a:visited {
 
 body {
 	margin: 0 auto;
-	width: var( --cf-width-full );
+	overflow-x: hidden;
 	padding: 0;
 	position:  relative;
+	width: var( --cf-width-full );
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -102,7 +103,11 @@ nav a {
 	text-align: right;
 	text-transform: uppercase;
 }
-nav a:hover, body.home-active nav a[href='#home'] {
+nav a:hover,
+body.home-active nav a[href='#home'],
+body.about-active nav a[href='#about'],
+body.portfolio-active nav a[href='#portfolio'],
+body.contact-active nav a[href='#contact'] {
 	color: var( --cf-color-darker );
 	font-weight: normal;
 }
@@ -119,6 +124,44 @@ p {
 	width: 100%;
 	position: relative;
 	z-index: 0;
+}
+body.home-active .home-content,
+body.about-active .about-content,
+body.portfolio-active .portfolio-content,
+body.contact-active .contact-content {
+	transition: transform 0.25s ease, opacity 0.25s ease, visibility 0.25s step-start;
+}
+body.home-active .about-content,
+body.home-active .portfolio-content,
+body.home-active .contact-content,
+body.about-active .home-content,
+body.about-active .portfolio-content,
+body.about-active .contact-content,
+body.portfolio-active .home-content,
+body.portfolio-active .about-content,
+body.portfolio-active .contact-content,
+body.contact-active .home-content,
+body.contact-active .about-content,
+body.contact-active .portfolio-content {
+	opacity: 0;
+	transition: transform 0.25s ease, opacity 0.25s ease, visibility 0.25s step-end;
+	visibility: hidden;
+}
+body.home-active .about-content,
+body.home-active .portfolio-content,
+body.home-active .contact-content,
+body.about-active .portfolio-content,
+body.about-active .contact-content,
+body.portfolio-active .contact-content {
+	transform: translateX(0.5%);
+}
+body.about-active .home-content,
+body.portfolio-active .home-content,
+body.portfolio-active .about-content,
+body.contact-active .home-content,
+body.contact-active .about-content,
+body.contact-active .portfolio-content {
+	transform: translateX(-0.5%);
 }
 
 .intro-graphic {
@@ -174,6 +217,9 @@ p {
 .primary-text p {
 	margin-bottom: 1.2em;
 }
+.primary-text p strong {
+	font-weight: 400;
+}
 
 .home-blurb {
 	left: var( --cf-col-6 );
@@ -181,6 +227,50 @@ p {
 	width:  var( --cf-col-3 );
 	top: var( --cf-top );
 }
+
+
+.about-graphic {
+	left: var( --cf-col-2 );
+	position: absolute;
+	top: var( --cf-top );
+}
+.about-text-top, .about-text-bottom {
+	display: flex;
+	font-size: calc( var( --cf-unit ) * 12 );
+	height: var( --cf-col-2 );
+	justify-content: flex-end;
+	line-height: 0.64em;
+	text-transform: uppercase;
+	width: var( --cf-col-3 );
+}
+.about-graphic span {
+	display: inline-block;
+	transform: translateY(-4.5%);
+}
+.about-text-top {
+	align-items: flex-end;
+	background-color: var( --cf-color-darker );
+	color: var( --cf-color-white );
+}
+.about-text-bottom {
+	align-items: flex-start;
+	border: calc( var( --cf-unit) / 5 ) solid var( --cf-color-darker );
+	border-top: none;
+	box-sizing: border-box;
+	position: absolute;
+	top: var( --cf-col-2 );
+}
+.about-text-bottom span {
+	transform: translateY(-4.5%) translateX(calc( var( --cf-unit) / 5 ));
+}
+
+.about-blurb {
+	left: var( --cf-col-6 );
+	position: absolute;
+	width:  var( --cf-col-3 );
+	top: calc( var( --cf-top ) + var( --cf-col-1 ) );
+}
+
 
 .copyright {
 	align-items: center;
@@ -229,6 +319,23 @@ p {
 		margin: 0 1.5em;
 	}
 
+	body.home-active .about-content,
+	body.home-active .portfolio-content,
+	body.home-active .contact-content,
+	body.about-active .portfolio-content,
+	body.about-active .contact-content,
+	body.portfolio-active .contact-content {
+		transform: translateX(1%);
+	}
+	body.about-active .home-content,
+	body.portfolio-active .home-content,
+	body.portfolio-active .about-content,
+	body.contact-active .home-content,
+	body.contact-active .about-content,
+	body.contact-active .portfolio-content {
+		transform: translateX(-1%);
+	}
+
 	.intro-graphic {
 		left: var( --cf-col-3 );
 		width: var( --cf-col-6 );
@@ -256,6 +363,30 @@ p {
 		top: calc( var( --cf-top ) + var( --cf-col-1) * 7 );
 	}
 
+
+	.about-graphic {
+		left: var( --cf-col-1 );
+		position: absolute;
+		top: var( --cf-top );
+	}
+	.about-text-top, .about-text-bottom {
+		font-size: calc( var( --cf-unit ) * 12 );
+		height: calc( var( --cf-col-1 ) * 2.25);
+		width: var( --cf-col-10 );
+	}
+	.about-text-top {
+		justify-content: flex-start;
+	}
+	.about-text-bottom {
+		top: calc( var( --cf-col-1 ) * 2.25);
+	}
+
+	.about-blurb {
+		left: var( --cf-col-2 );
+		width:  var( --cf-col-8 );
+		top: calc( var( --cf-top ) + var( --cf-col-1) * 6 );
+	}
+
 	.copyright {
 		top: calc( 100% - var( --cf-col-half ) * 0.8 - var( --cf-unit ) * 3.4 );
 		right: var( --cf-col-half );
@@ -272,6 +403,23 @@ p {
 	nav a {
 		font-size: calc( var( --cf-unit ) * 1.8 );
 		margin: 0 0 1.5em 0;
+	}
+
+	body.home-active .about-content,
+	body.home-active .portfolio-content,
+	body.home-active .contact-content,
+	body.about-active .portfolio-content,
+	body.about-active .contact-content,
+	body.portfolio-active .contact-content {
+		transform: translateY(calc( var( --cf-unit ) * 0.5 ));
+	}
+	body.about-active .home-content,
+	body.portfolio-active .home-content,
+	body.portfolio-active .about-content,
+	body.contact-active .home-content,
+	body.contact-active .about-content,
+	body.contact-active .portfolio-content {
+		transform: translateY(calc( var( --cf-unit ) * -0.5 ));
 	}
 
 	.intro-graphic {
@@ -305,10 +453,27 @@ p {
 		top: calc( var( --cf-top ) + var( --cf-col-1) * 16 );
 	}
 
+
+	.about-graphic {
+		display:  none;
+	}
+
+	.about-blurb {
+		left: var( --cf-col-1 );
+		width:  var( --cf-col-10 );
+		top: calc( var( --cf-top ) + var( --cf-col-half) );
+	}
+
+
 	.copyright {
-		top: calc( var( --cf-top ) + var( --cf-col-1) * 24 );
 		right: var( --cf-col-1 );
 		padding-bottom: var( --cf-col-1 );
+	}
+	body.home-active .copyright {
+		top: calc( var( --cf-top ) + var( --cf-col-1) * 24 );
+	}
+	body.about-active .copyright {
+		top: calc( var( --cf-top ) + var( --cf-col-1) * 11 );
 	}
 	.copyright-text {
 		font-size: calc( var( --cf-unit ) * 1.2 );
