@@ -121,6 +121,34 @@ p {
 
 /* CLASSES */
 
+.loading-overlay {
+	align-items: center;
+	background-color: var( --cf-color-white );
+	bottom: 0;
+	display: flex;
+	justify-content: center;
+	left: 0;
+	position: fixed;
+	right: 0;
+	top: 0;
+	transition: opacity 0.3s ease, visibility 0.3s step-start;
+	z-index: 100;
+}
+.loading-overlay.not-loading {
+	opacity: 0;
+	transition: opacity 0.3s ease 0.5s, visibility 0.8s step-end;
+	visibility: hidden;
+}
+.loading-logo {
+	width: var( --cf-col-half );
+	transition: opacity 0.2s ease 0.5s, transform 0.2s ease 0.5s;
+}
+.loading-overlay.not-loading .loading-logo {
+	opacity: 0;
+	transform: rotateZ(-135deg) scale(0.25);
+	transition: opacity 0.2s ease-in, transform 0.2s ease-in;
+}
+
 .page-content {
 	width: 100%;
 	position: relative;
