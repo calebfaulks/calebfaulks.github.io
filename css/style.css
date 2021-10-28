@@ -24,6 +24,7 @@
 	--cf-color-darker: #222;
 	--cf-color-darker-75: #222222C0;
 	--cf-color-darker-50: #22222280;
+	--cf-color-medium: #888;
 	--cf-color-lighter: #CCC;
 	--cf-color-white: #FFF;
 }
@@ -272,6 +273,65 @@ body.contact-active .portfolio-content {
 }
 
 
+.portfolio-items {
+	display: flex;
+	justify-content: space-between;
+	left: var( --cf-col-2 );
+	position: absolute;
+	top: var( --cf-top );
+	width: var( --cf-col-7 );
+}
+.portfolio-item {
+	border: calc( var( --cf-unit ) / 5 ) solid var( --cf-color-medium );
+	box-sizing: border-box;
+	flex-grow: 0;
+	flex-shrink: 0;
+	height: calc( var( --cf-col-1 ) * 3.25 );
+	position: relative;
+	width: var( --cf-col-2 );
+}
+.portfolio-item::before {
+	background-position: center;
+	background-size: cover;
+	bottom: calc( var( --cf-unit ) * 3 );
+	content: "";
+	left: calc( var( --cf-unit ) * 3 );
+	position: absolute;
+	right: calc( var( --cf-unit ) * 3 );
+	top: calc( var( --cf-unit ) * 3 );
+}
+.portfolio-item.portfolio-mtsrec::before {
+	background-image: url("../assets/img/mtsrec-bg.jpg");
+}
+.portfolio-item.portfolio-g8::before {
+	background-image: url("../assets/img/g8-bg.jpg");
+}
+.portfolio-item.portfolio-pynsw::before {
+	background-image: url("../assets/img/pynsw-bg.jpg");
+}
+.portfolio-item::after {
+	background-position: center top;
+	background-repeat: no-repeat;
+	background-size: calc( var( --cf-unit ) * 12 );
+	bottom: 0;
+	content: "";
+	left: 0;
+	position: absolute;
+	right: 0;
+	top: var( --cf-col-1 );
+}
+.portfolio-item.portfolio-mtsrec::after {
+	background-image: url("../assets/svg/mtsrec.svg");
+	background-size: calc( var( --cf-unit ) * 18 );
+}
+.portfolio-item.portfolio-g8::after {
+	background-image: url("../assets/svg/g8.svg");
+}
+.portfolio-item.portfolio-pynsw::after {
+	background-image: url("../assets/svg/pynsw.svg");
+}
+
+
 .copyright {
 	align-items: center;
 	top: calc(100% - var( --cf-col-half ) * 0.8 - var( --cf-unit ) * 3.4 );
@@ -383,9 +443,37 @@ body.contact-active .portfolio-content {
 
 	.about-blurb {
 		left: var( --cf-col-2 );
-		width:  var( --cf-col-8 );
+		width: var( --cf-col-8 );
 		top: calc( var( --cf-top ) + var( --cf-col-1) * 6 );
 	}
+
+
+	.portfolio-items {
+		flex-direction: column;
+		margin-top: calc( var( --cf-col-1 ) * -0.25 );
+		width: var( --cf-col-8 );
+	}
+	.portfolio-item {
+		border-width: calc( var( --cf-unit ) / 3 );
+		height: calc( var( --cf-col-1 ) * 13);
+		margin: calc( var( --cf-col-1 ) * -4.5 ) 0;
+		transform: rotateX(60deg) rotateZ(-45deg) scale(0.6);
+		width: 100%;
+	}
+	.portfolio-item::before {
+		bottom: calc( var( --cf-unit ) * 5 );
+		left: calc( var( --cf-unit ) * 5 );
+		right: calc( var( --cf-unit ) * 5 );
+		top: calc( var( --cf-unit ) * 5 );
+	}
+	.portfolio-item::after {
+		background-size: calc( var( --cf-unit ) * 16 );
+		top: var( --cf-col-4 );
+	}
+	.portfolio-item.portfolio-mtsrec::after {
+		background-size: calc( var( --cf-unit ) * 24 );
+	}
+
 
 	.copyright {
 		top: calc( 100% - var( --cf-col-half ) * 0.8 - var( --cf-unit ) * 3.4 );
@@ -465,6 +553,33 @@ body.contact-active .portfolio-content {
 	}
 
 
+	.portfolio-items {
+		flex-direction: column;
+		margin-top: calc( var( --cf-col-1 ) * -1.5 );
+		width: var( --cf-col-8 );
+	}
+	.portfolio-item {
+		border-width: calc( var( --cf-unit ) / 3 );
+		height: calc( var( --cf-col-1 ) * 13);
+		margin: calc( var( --cf-col-1 ) * -4.25 ) 0;
+		transform: rotateX(60deg) rotateZ(-45deg) scale(0.675);
+		width: 100%;
+	}
+	.portfolio-item::before {
+		bottom: calc( var( --cf-unit ) * 2.5 );
+		left: calc( var( --cf-unit ) * 2.5 );
+		right: calc( var( --cf-unit ) * 2.5 );
+		top: calc( var( --cf-unit ) * 2.5 );
+	}
+	.portfolio-item::after {
+		background-size: calc( var( --cf-unit ) * 10 );
+		top: var( --cf-col-4 );
+	}
+	.portfolio-item.portfolio-mtsrec::after {
+		background-size: calc( var( --cf-unit ) * 15 );
+	}
+
+
 	.copyright {
 		right: var( --cf-col-1 );
 		padding-bottom: var( --cf-col-1 );
@@ -474,6 +589,9 @@ body.contact-active .portfolio-content {
 	}
 	body.about-active .copyright {
 		top: calc( var( --cf-top ) + var( --cf-col-1) * 11 );
+	}
+	body.portfolio-active .copyright {
+		top: calc( var( --cf-top ) + var( --cf-col-1) * 13 );
 	}
 	.copyright-text {
 		font-size: calc( var( --cf-unit ) * 1.2 );
