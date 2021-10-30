@@ -424,6 +424,10 @@ body.contact-active .portfolio-content {
 		transform: translateX(-1%);
 	}
 
+	.loading-logo {
+		width: var( --cf-col-1 );
+	}
+
 	.intro-graphic {
 		left: var( --cf-col-3 );
 		width: var( --cf-col-6 );
@@ -536,6 +540,10 @@ body.contact-active .portfolio-content {
 	body.contact-active .about-content,
 	body.contact-active .portfolio-content {
 		transform: translateY(calc( var( --cf-unit ) * -0.5 ));
+	}
+
+	.loading-logo {
+		width: calc( var( --cf-col-1 ) * 1.5 );
 	}
 
 	.intro-graphic {
