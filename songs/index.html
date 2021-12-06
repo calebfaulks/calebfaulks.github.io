@@ -181,9 +181,13 @@
 				root.style.setProperty("--cf-font-size", fontSize);
 			}
 
-			nav.focus();
-			document.body.classList.remove("show-nav");
-			checkNavChange();
+			if (location.hash) {
+				checkNavChange();
+			}
+			else {
+				nav.focus();
+				document.body.classList.remove("show-nav");
+			}
 		</script>
 	</body>
 </html>
