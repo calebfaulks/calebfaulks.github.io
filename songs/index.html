@@ -22,45 +22,6 @@
 					<button id="font-bigger">+</button>
 					<button id="font-smaller">-</button>
 				</div>
-				<section id="how-deep-the-fathers-love" class="song song-active">
-					<h2>How Deep the Father's Love</h2>
-					<div>
-						How deep the Father's love for us<br>
-						How vast beyond all measure<br>
-						That he should give his only son<br>
-						To make a wretch his treasure<br>
-						<br>
-						How great the pain of searing loss<br>
-						The Father turns his face away<br>
-						As wounds which mar the chosen one<br>
-						Bring many sons to glory<br>
-						<hr>
-						Behold the man upon a cross<br>
-						My sin upon his shoulders<br>
-						Ashamed I hear my mocking voice<br>
-						Call out among the scoffers<br>
-						<br>
-						It was my sin that held him there<br>
-						Until it was accomplished<br>
-						His dying breath has brought me life<br>
-						I know that it is finished<br>
-						<hr>
-						I will not boast in anything<br>
-						No gifts, no power, no wisdom<br>
-						But I will boast in Jesus Christ<br>
-						His death and resurrection<br>
-						<br>
-						Why should I gain from his reward?<br>
-						I cannot give an answer<br>
-						But this I know with all my heart<br>
-						His wounds have paid my ransom<br>
-						<br>
-						Why should I gain from his reward?<br>
-						I cannot give an answer<br>
-						But this I know with all my heart<br>
-						His wounds have paid my ransom<br>
-					</div>
-				</section>
 				<section id="build-my-life" class="song">
 					<h2>Build My Life</h2>
 					<div>
@@ -135,6 +96,45 @@
 						And I will not be shaken
 					</div>
 				</section>
+				<section id="how-deep-the-fathers-love" class="song">
+					<h2>How Deep the Father's Love</h2>
+					<div>
+						How deep the Father's love for us<br>
+						How vast beyond all measure<br>
+						That he should give his only son<br>
+						To make a wretch his treasure<br>
+						<br>
+						How great the pain of searing loss<br>
+						The Father turns his face away<br>
+						As wounds which mar the chosen one<br>
+						Bring many sons to glory<br>
+						<hr>
+						Behold the man upon a cross<br>
+						My sin upon his shoulders<br>
+						Ashamed I hear my mocking voice<br>
+						Call out among the scoffers<br>
+						<br>
+						It was my sin that held him there<br>
+						Until it was accomplished<br>
+						His dying breath has brought me life<br>
+						I know that it is finished<br>
+						<hr>
+						I will not boast in anything<br>
+						No gifts, no power, no wisdom<br>
+						But I will boast in Jesus Christ<br>
+						His death and resurrection<br>
+						<br>
+						Why should I gain from his reward?<br>
+						I cannot give an answer<br>
+						But this I know with all my heart<br>
+						His wounds have paid my ransom<br>
+						<br>
+						Why should I gain from his reward?<br>
+						I cannot give an answer<br>
+						But this I know with all my heart<br>
+						His wounds have paid my ransom<br>
+					</div>
+				</section>
 			</div>
 		</main>
 		<script>
@@ -142,9 +142,10 @@
 			var nav = document.querySelector("nav");
 			var songNames = [];
 			var songs = document.querySelectorAll(".song");
+			songs[0].classList.add("song-active");
 			songs.forEach(function(cur) {
 				var s = cur.id;
-				var t = cur.querySelector("h2").innerText;
+				var t = cur.querySelector("h2").innerHTML;
 				songNames.push(s);
 				nav.innerHTML += `<a href="#${s}">${t}</a>`;
 			});
