@@ -51,6 +51,7 @@ nav {
 	display: flex;
 	flex-direction: column;
 	left: 80%;
+	overflow-x: hidden;
 	position: absolute;
 	right: 0;
 	top: 0;
