@@ -10,7 +10,7 @@
 		<link rel="icon" href="../assets/svg/cf.svg">
 		<link rel="preconnect" href="https://fonts.googleapis.com">
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-		<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@100;200;300;400;900&display=swap" rel="stylesheet">
+		<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@100;200;300;400;600&display=swap" rel="stylesheet">
 		<link rel="stylesheet" type="text/css" href="style.css">
 	</head>
 	<body class="show-nav">
@@ -18,6 +18,10 @@
 			<nav tabindex="0">
 			</nav>
 			<div class="songs-content">
+				<div class="font-size-buttons">
+					<button id="font-bigger">+</button>
+					<button id="font-smaller">-</button>
+				</div>
 				<section id="how-deep-the-fathers-love" class="song song-active">
 					<h2>How Deep the Father's Love</h2>
 					<div>
@@ -55,11 +59,86 @@
 						I cannot give an answer<br>
 						But this I know with all my heart<br>
 						His wounds have paid my ransom<br>
-					</div>section
+					</div>
+				</section>
+				<section id="build-my-life" class="song">
+					<h2>Build My Life</h2>
+					<div>
+						Worthy of every song we could ever sing<br>
+						Worthy of all the praise we could ever bring<br>
+						Worthy of every breath we could ever breathe<br>
+						We live for You<br>
+						<br>
+						Jesus, the name above every other name<br>
+						Jesus, the only one who could ever save<br>
+						Worthy of every breath we could ever breathe<br>
+						We live for You<br>
+						<br>
+						Holy, there is no one like You<br>
+						There is none beside You<br>
+						Open up my eyes in wonder<br>
+						Show me who You are<br>
+						And fill me with Your heart<br>
+						And lead me in Your love to those around me<br>
+						<hr>
+						Worthy of every song we could ever sing<br>
+						Worthy of all the praise we could ever bring<br>
+						Worthy of every breath we could ever breathe<br>
+						We live for You<br>
+						<br>
+						Jesus, the name above every other name<br>
+						Jesus, the only one who could ever save<br>
+						Worthy of every breath we could ever breathe<br>
+						We live for You<br>
+						<br>
+						Holy, there is no one like You<br>
+						There is none beside You<br>
+						Open up my eyes in wonder<br>
+						Show me who You are<br>
+						And fill me with Your heart<br>
+						And lead me in Your love to those around me<br>
+						<br>
+						Holy, there is no one like You<br>
+						There is none beside You<br>
+						Open up my eyes in wonder<br>
+						Show me who You are<br>
+						And fill me with Your heart<br>
+						And lead me in Your love to those around me<br>
+						<hr>
+						I will build my life upon Your love<br>
+						It is a firm foundation<br>
+						I will put my trust in You alone<br>
+						And I will not be shaken<br>
+						<br>
+						I will build my life upon Your love<br>
+						It is a firm foundation<br>
+						I will put my trust in You alone<br>
+						And I will not be shaken<br>
+						<br>
+						Holy, there is no one like You<br>
+						There is none beside You<br>
+						Open up my eyes in wonder<br>
+						Show me who You are<br>
+						And fill me with Your heart<br>
+						And lead me in Your love to those around me<br>
+						<br>
+						Holy, there is no one like You<br>
+						There is none beside You<br>
+						Open up my eyes in wonder<br>
+						Show me who You are<br>
+						And fill me with Your heart<br>
+						And lead me in Your love to those around me<br>
+						<br>
+						I will build my life upon Your love<br>
+						It is a firm foundation<br>
+						I will put my trust in You alone<br>
+						And I will not be shaken
+					</div>
 				</section>
 			</div>
 		</main>
 		<script>
+			var root = document.querySelector(":root");
 			var nav = document.querySelector("nav");
 			var songNames = [];
 			var songs = document.querySelectorAll(".song");
@@ -73,6 +152,10 @@
 			window.addEventListener('load', window_load);
 			window.addEventListener('hashchange', checkNavChange);
 
+			document.querySelector("#font-bigger").addEventListener("click", function() { changeFontSize(1); });
+			document.querySelector("#font-smaller").addEventListener("click", function() { changeFontSize(-1); });
+
+
 			function window_load() {
 				
 			}
@@ -83,7 +166,17 @@
 				if (songNames.includes(hash)) {
 					document.querySelector(".song-active").classList.remove("song-active");
 					document.getElementById(hash).classList.add("song-active");
+					window.location.hash = "";
 				}
+			}
+
+			function changeFontSize(diff) {
+				var fontSize = getComputedStyle(root).getPropertyValue("--cf-font-size") * 1;
+				fontSize += diff;
+				if (fontSize < 1) fontSize = 1;
+				if (fontSize > 20) fontSize = 20;
+
+				root.style.setProperty("--cf-font-size", fontSize);
 			}
 
 			nav.focus();
