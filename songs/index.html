@@ -1,0 +1,94 @@
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width">
+		<title>Song List | Caleb Faulks</title>
+		<meta name="description" content="">
+		<meta name="keywords" content="">
+		<meta name="author" content="Caleb Faulks">
+		<link rel="icon" href="../assets/svg/cf.svg">
+		<link rel="preconnect" href="https://fonts.googleapis.com">
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+		<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@100;200;300;400;900&display=swap" rel="stylesheet">
+		<link rel="stylesheet" type="text/css" href="style.css">
+	</head>
+	<body class="show-nav">
+		<main class="content">
+			<nav tabindex="0">
+			</nav>
+			<div class="songs-content">
+				<section id="how-deep-the-fathers-love" class="song song-active">
+					<h2>How Deep the Father's Love</h2>
+					<div>
+						How deep the Father's love for us<br>
+						How vast beyond all measure<br>
+						That he should give his only son<br>
+						To make a wretch his treasure<br>
+						<br>
+						How great the pain of searing loss<br>
+						The Father turns his face away<br>
+						As wounds which mar the chosen one<br>
+						Bring many sons to glory<br>
+						<hr>
+						Behold the man upon a cross<br>
+						My sin upon his shoulders<br>
+						Ashamed I hear my mocking voice<br>
+						Call out among the scoffers<br>
+						<br>
+						It was my sin that held him there<br>
+						Until it was accomplished<br>
+						His dying breath has brought me life<br>
+						I know that it is finished<br>
+						<hr>
+						I will not boast in anything<br>
+						No gifts, no power, no wisdom<br>
+						But I will boast in Jesus Christ<br>
+						His death and resurrection<br>
+						<br>
+						Why should I gain from his reward?<br>
+						I cannot give an answer<br>
+						But this I know with all my heart<br>
+						His wounds have paid my ransom<br>
+						<br>
+						Why should I gain from his reward?<br>
+						I cannot give an answer<br>
+						But this I know with all my heart<br>
+						His wounds have paid my ransom<br>
+					</div>section
+				</section>
+			</div>
+		</main>
+		<script>
+			var nav = document.querySelector("nav");
+			var songNames = [];
+			var songs = document.querySelectorAll(".song");
+			songs.forEach(function(cur) {
+				var s = cur.id;
+				var t = cur.querySelector("h2").innerText;
+				songNames.push(s);
+				nav.innerHTML += `<a href="#${s}">${t}</a>`;
+			});
+
+			window.addEventListener('load', window_load);
+			window.addEventListener('hashchange', checkNavChange);
+
+			function window_load() {
+				
+			}
+
+			function checkNavChange(e) {
+				if (!location.hash) return;
+				var hash = location.hash.slice(1).toLowerCase();
+				if (songNames.includes(hash)) {
+					document.querySelector(".song-active").classList.remove("song-active");
+					document.getElementById(hash).classList.add("song-active");
+				}
+			}
+
+			nav.focus();
+			document.body.classList.remove("show-nav");
+			checkNavChange();
+		</script>
+	</body>
+</html>

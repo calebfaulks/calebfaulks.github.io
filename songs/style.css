@@ -1,0 +1,96 @@
+/* VARIABLES */
+
+:root {
+	/* layout */
+	--cf-width-full: 100vw;
+
+	/* colour */
+	--cf-color-black: #000;
+	--cf-color-darker: #222;
+	--cf-color-darker-75: #222222C0;
+	--cf-color-darker-50: #22222280;
+	--cf-color-medium: #888;
+	--cf-color-lighter: #CCC;
+	--cf-color-white: #FFF;
+}
+
+
+/* GLOBAL */
+
+:root {
+	color: var( --cf-color-darker );
+	font-family: 'Kanit', sans-serif;
+}
+
+
+/* ELEMENTS */
+
+html, body {
+	margin: 0;
+	padding: 0;
+}
+
+body {
+	align-items: center;
+	display: flex;
+	justify-content: center;
+}
+
+main {
+	display: flex;
+	flex-direction: row-reverse;
+	justify-content: flex-end;
+	max-width: 100vw;
+	position: relative;
+	width: 500px;
+}
+
+nav {
+	background-color: var( --cf-color-lighter );
+	bottom: 0;
+	display: flex;
+	flex-direction: column;
+	left: 80%;
+	position: absolute;
+	right: 0;
+	top: 0;
+}
+body.show-nav nav, nav:focus {
+	left: 20%;
+}
+
+nav a {
+	display: block;
+	opacity: 0;
+	text-align: right;
+	white-space: nowrap;
+	width: 100%;
+	visibility: hidden;
+}
+body.show-nav nav a, nav:focus a {
+	opacity: 1;
+	visibility: visible;
+}
+
+hr {
+	border: none;
+	border-top: 0.15em solid var( --cf-color-lighter );
+	margin: 2em auto 2em 0;
+	max-width: 100%;
+	width: 10em;
+}
+
+
+/* CLASSES */
+
+.songs-content {
+	flex-grow: 0;
+	width: 80%;
+}
+
+.song {
+	display:  none;
+}
+.song-active {
+	display: block;
+}
