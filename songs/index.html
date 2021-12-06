@@ -138,6 +138,7 @@
 			</div>
 		</main>
 		<script>
+			if (location.hash) document.body.classList.remove("show-nav");
 			var root = document.querySelector(":root");
 			var nav = document.querySelector("nav");
 			var songNames = [];
