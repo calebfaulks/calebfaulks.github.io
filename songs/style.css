@@ -92,7 +92,7 @@ nav a {
 	font-size: 3.5vw;
 	letter-spacing: 0.1em;
 	opacity: 0;
-	padding: 10px 30px;
+	padding: 10px 20px;
 	text-decoration: none;
 	text-transform: uppercase;
 	transition: opacity 0.3s ease, visibility 0.3s step-end;
