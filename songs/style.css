@@ -142,7 +142,7 @@ hr {
 }
 
 .font-size-buttons button#font-smaller {
-	transform: translateY(-10%);
+	transform: translateY(-5%);
 }
 
 .songs-content {
