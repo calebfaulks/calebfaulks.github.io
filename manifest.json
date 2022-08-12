@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json.schemastore.org/web-manifest-combined.json",
+  "name": "Caleb Faulks",
+  "short_name": "CF",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#FFF",
+  "description": "Caleb Faulks' website.",
+  "icons": [{
+    "src": "assets/svg/cf.svg",
+    "sizes": "any"
+  }]
+}
