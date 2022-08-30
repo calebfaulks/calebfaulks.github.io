@@ -1,0 +1,214 @@
+/* VARIABLES */
+
+:root {
+    /* layout */
+    --cf-width-full: 100vw;
+    --cf-unit: calc( var( --cf-width-full ) / 192 );
+    --cf-col-half: calc( var( --cf-width-full ) / 24 );
+    --cf-col-1: calc( var( --cf-width-full ) / 12 );
+    --cf-col-2: calc( var( --cf-width-full ) / 6 );
+    --cf-col-3: calc( var( --cf-width-full ) / 4 );
+    --cf-col-4: calc( var( --cf-width-full ) / 3 );
+    --cf-col-5: calc( var( --cf-width-full ) / 12 * 5 );
+    --cf-col-6: calc( var( --cf-width-full ) / 2 );
+    --cf-col-7: calc( var( --cf-width-full ) / 12 * 7 );
+    --cf-col-8: calc( var( --cf-width-full ) / 3 * 2 );
+    --cf-col-9: calc( var( --cf-width-full ) / 4 * 3 );
+    --cf-col-10: calc( var( --cf-width-full ) / 6 * 5 );
+    --cf-col-11: calc( var( --cf-width-full ) / 12 * 7 );
+    --cf-col-12: var( --cf-width-full );
+    --cf-top: calc(50vh - var( --cf-col-1 ) * 2.25 );
+    /* colour */
+    --cf-color-black: #000;
+    --cf-color-darker: #222;
+    --cf-color-darker-75: #222222C0;
+    --cf-color-darker-50: #22222280;
+    --cf-color-medium: #888;
+    --cf-color-light: #BBB;
+    --cf-color-lighter: #CCC;
+    --cf-color-white: #FFF;
+}
+
+/* Ultrawide */
+@media (min-aspect-ratio: 192/90) {
+    :root {
+        --cf-width-full: calc(100vh / 90 * 192);
+    }
+}
+
+/* Tablet (square to narrow) */
+@media (min-aspect-ratio: 3/4) and (max-aspect-ratio: 1/1) {
+    :root {
+        --cf-width-full: calc(100vh / 4 * 3);
+        --cf-unit: calc( var( --cf-width-full ) / 76.8 );
+        --cf-top: calc(50vh - var( --cf-col-1 ) * 5.5 );
+    }
+}
+
+/* Mobile (narrow) */
+@media (max-aspect-ratio: 2999999/4000000) {
+    :root {
+        --cf-unit: calc( var( --cf-width-full ) / 37.5 );
+        --cf-top: calc( var( --cf-col-1 ) * 6.5 );
+    }
+}
+
+
+/* GLOBAL */
+
+:root {
+    color: var( --cf-color-darker );
+    font-family: 'Kanit', sans-serif;
+    font-size: 16.3px;
+}
+
+
+/* ELEMENTS */
+
+a {
+    color: var( --cf-color-darker );
+    text-decoration: none;
+}
+
+    a:visited {
+        color: var( --cf-color-darker );
+    }
+
+body {
+    margin: 0 auto;
+    padding: 0;
+    position: relative;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    margin: 0;
+    padding: 0;
+}
+
+p {
+    color: var( --cf-color-darker-75 );
+    margin: 0;
+}
+
+button, .button {
+    background-color: var( --cf-color-lighter );
+    border: none;
+    border-radius: 5000px;
+    cursor: pointer;
+    padding: 20px;
+    transition-duration: 0.3s;
+}
+
+    button:hover, .button:hover {
+        background-color: var( --cf-color-light );
+    }
+
+input {
+    background: none;
+    border: none;
+    border-bottom: 1px solid var( --cf-color-medium );
+    box-sizing: border-box;
+    font-family: 'Kanit', sans-serif;
+    min-width: 250px;
+    padding: 5px 10px;
+    text-align: center;
+}
+input:focus {
+    border-color: var( --cf-color-darker );
+    outline: none;
+}
+
+
+/* CLASSES */
+
+.add-content {
+    row-gap: 15px;
+}
+
+.button-confirm-category, .button-new-category, .button-stop-timer {
+    box-sizing: border-box;
+    min-width: 250px;
+    padding: 10px 30px;
+    text-align: center;
+}
+
+.button-time-category {
+    box-sizing: border-box;
+    min-width: 250px;
+    padding: 10px 30px;
+    text-align: center;
+}
+
+.center-content-col, .center-content-row {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.center-content-col {
+    flex-direction: column;
+}
+
+.center-content-row {
+    flex-direction: row;
+}
+
+.corner-button {
+    bottom: 20px;
+    position: fixed;
+    right: 20px;
+}
+
+.fill-page {
+    height: 100%;
+    width: 100%;
+}
+
+#icon-standard line {
+    stroke: var( --cf-color-darker );
+    stroke-width: 2;
+    stroke-linecap: round;
+}
+
+.new-category-content {
+    row-gap: 50px;
+}
+
+.pane {
+    bottom: 0;
+    left: 0;
+    opacity: 0;
+    position: fixed;
+    right: 0;
+    top: 0;
+    transition: opacity 0.25s ease-in-out 0s, visibility 0s step-start 0.25s;
+    visibility: hidden;
+}
+
+.pane-active {
+    opacity: 1;
+    transition: opacity 0.25s ease-in-out 0.35s, visibility 0s step-start 0.35s;
+    visibility: visible;
+}
+
+.time-category-buttons-list {
+    row-gap: 15px;
+}
+
+.time-sidebar {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.time-sidebar-item {
+    border-left: solid min(100px, var( --cf-col-4 )) var( --cf-color-darker );
+    display: flex;
+    align-items: center;
+    padding-left: 20px;
+    transition: flex-grow 0.5s ease-in-out 0.25s;
+}
+
+.track-content {
+    row-gap: 50px;
+}

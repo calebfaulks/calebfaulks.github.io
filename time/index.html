@@ -1,0 +1,75 @@
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width">
+		<title>Time Tracker</title>
+		<link rel="preconnect" href="https://fonts.googleapis.com">
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+		<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@100;200;300;400;900&display=swap" rel="stylesheet">
+		<link rel="stylesheet" type="text/css" href="css/style.css">
+		<script src="js/script.js"></script>
+		<link rel="manifest" href="manifest.json">
+	</head>
+	<body>
+		<div id="main" class="pane pane-active">
+			<div class="time-sidebar"></div>
+
+			<a href="#add" class="button corner-button button-add-time">
+				<svg id="icon-standard" width="40" height="40" viewBox="0 0 20 20">
+					<line x1="2" x2="18" y1="10" y2="10"></line>
+					<line x1="10" x2="10" y1="2" y2="18"></line>
+				</svg>
+			</a>
+		</div>
+		<div id="add" class="pane">
+			<div class="fill-page center-content-col add-content">
+				<div class="center-content-col">
+					<a href="#new" class="button button-new-category" onclick="clearCategoryName();">
+						<svg id="icon-standard" width="24" height="24" viewBox="0 0 24 24">
+							<line x1="4" x2="20" y1="12" y2="12"></line>
+							<line x1="12" x2="12" y1="4" y2="20"></line>
+						</svg>
+					</a>
+				</div>
+				<div class="time-category-buttons-list center-content-col"></div>
+			</div>
+
+			<a href="#" class="button corner-button button-back">
+				<svg id="icon-standard" width="40" height="40" viewBox="0 0 20 20">
+					<line x1="2" x2="18" y1="10" y2="10"></line>
+					<line x1="2" x2="8" y1="10" y2="5"></line>
+					<line x1="2" x2="8" y1="10" y2="15"></line>
+				</svg>
+			</a>
+		</div>
+		<div id="new" class="pane">
+			<div class="fill-page center-content-col new-category-content">
+				<input id="category-name" type="text" placeholder="category" />
+				<a href="#track" class="button button-confirm-category" onclick="createCategoryAndTime();">
+					<svg id="icon-standard" width="24" height="24" viewBox="0 0 24 24">
+						<line x1="6" x2="10" y1="14" y2="20"></line>
+						<line x1="10" x2="18" y1="20" y2="4"></line>
+					</svg>
+				</a>
+			</div>
+
+			<a href="#add" class="button corner-button button-back">
+				<svg id="icon-standard" width="40" height="40" viewBox="0 0 20 20">
+					<line x1="2" x2="18" y1="10" y2="10"></line>
+					<line x1="2" x2="8" y1="10" y2="5"></line>
+					<line x1="2" x2="8" y1="10" y2="15"></line>
+				</svg>
+			</a>
+		</div>
+		<div id="track" class="pane">
+			<div class="fill-page center-content-col track-content">
+				<input id="time-name" type="text" placeholder="name" />
+				<div id="timer-display">0h 0m 0s</div>
+				<a href="#" class="button button-stop-timer" onclick="endCurrentTime();">Stop</a>
+			</div>
+		</div>
+
+		<script>initTracker();</script>
+	</body>
+</html>

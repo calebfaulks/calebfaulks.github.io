@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json.schemastore.org/web-manifest-combined.json",
+  "name": "Time Tracker",
+  "short_name": "Time",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#FFF",
+  "description": "Track your time",
+  "icons": [{
+    "src": "../assets/svg/cf.svg",
+    "sizes": "any"
+  }]
+}
