@@ -4,7 +4,6 @@
   "short_name": "CF",
   "start_url": ".",
   "display": "fullscreen",
-  "display_override": "fullscreen",
   "background_color": "#FFF",
   "description": "Caleb Faulks' website.",
   "icons": [{
