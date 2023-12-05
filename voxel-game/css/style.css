@@ -1,0 +1,14 @@
+html, body {
+	margin: 0;
+	overflow-x: hidden;
+	padding: 0;
+}
+
+#canvas-container {
+	background: #FFF;
+	height: 100vh;
+	overflow: hidden;
+}
+canvas {
+	
+}
