@@ -3,7 +3,7 @@
 
 var camera, controls, scene, renderer;
 
-var raycaster, mouse;
+var raycaster, mouse, mouseLeftDown, mouseRightDown;
 
 var groundMesh;
 var baseMat, groundMat, voxelMat;
@@ -180,41 +180,64 @@ function onWindowResize() {
 }
 
 function onMouseMove(event) {
-	click = false;
-	
 	// calculate mouse position in normalized device coordinates
 	// (-1 to +1) for both components
 	
 	mouse.x = ((event.clientX) / viewWidth) * 2 - 1;
-	mouse.y = - ((event.clientY - viewTop) / viewHeight) * 2 + 1;	
-	
-	// update the picking ray with the camera and mouse position	
-	raycaster.setFromCamera( mouse, camera );	
+	mouse.y = - ((event.clientY - viewTop) / viewHeight) * 2 + 1;
+}
 
-	// calculate objects intersecting the picking ray
-	var intersects = raycaster.intersectObjects(scene.children);
+function updateMouseControl() {
+	var updateCamera = false;
+	if (mouseLeftDown) {
+		
+		// update the picking ray with the camera and mouse position	
+		raycaster.setFromCamera( mouse, camera );	
 
-	for ( var i = 0; i < intersects.length; i++ ) {
+		// calculate objects intersecting the picking ray
+		var intersects = raycaster.intersectObject(groundMesh, false);
 
-		var mesh = intersects[i].object;
+		if (intersects[0]) {
 
-		break;
+			var point = intersects[0].point;
+			var rot = Math.PI / 2 - (Math.atan2(point.x - manChar.posX, point.z - manChar.posZ) + controls.getAzimuthalAngle());
+			walkChar(-Math.sin(rot), Math.cos(rot));
+			//console.log(point);
+			updateCamera = true;
+		}
+	}
+	if (mouseRightDown) {
+		
+	}
+
+	if (updateCamera) {
+		camera.position.x = manChar.centerPoint.position.x - camZoom;
+		camera.position.y = manChar.centerPoint.position.y + camZoom;
+		camera.position.z = manChar.centerPoint.position.z - camZoom;
+		focusCameraOn(manChar.centerPoint);
 	}
 }
 
 function onMouseLeave(event) {
-	click = false;
+	mouseLeftDown = false;
+	mouseRightDown = false;
 }
 
 function onMouseDown(event) {
-	click = true;
+	if (event.button === 0) {
+		// left click
+		mouseLeftDown = true;
+	}
+	else if (event.button === 2) {
+		// right click 
+		mouseRightDown = true;
+	}
 }
 
 function onMouseUp(event) {
-	if (!click) return;
-	click = false;
+	if (!mouseLeftDown && !mouseRightDown) return;
 	
-	// calculate mouse position in normalized device coordinates
+	/* // calculate mouse position in normalized device coordinates
 	// (-1 to +1) for both components
 	
 	mouse.x = ((event.clientX - viewLeft) / viewWidth) * 2 - 1;
@@ -233,19 +256,21 @@ function onMouseUp(event) {
 		face = intersects[i].face.materialIndex;
 		
 		break;
-	}
+	} */
 	
 	if (event.button === 0) {
 		// left click
+		mouseLeftDown = false;
 	}
 	else if (event.button === 2) {
 		// right click 
+		mouseRightDown = false;
 	}
 }
 
 function onKeyDown(event)  {
-	var k = event.keyCode;
-	if (k == 27)
+	var k = event.key;
+	if (k == "Escape")
 	{
 		// esc
 	}
@@ -272,27 +297,7 @@ function updateGamepads() {
 
 		if (gp && (Math.abs(gp.axes[0]) >= 0.5 || Math.abs(gp.axes[1]) >= 0.5)) {
 
-			if (manChar.animState == 0) {
-				manChar.animState = 1;
-			}
-			else {
-				manChar.animState = 2;
-			}
-
-			playerCamOffset = {
-				x: camera.position.x - manChar.posX,
-				//y: camera.position.y - manChar.posY,
-				z: camera.position.z - manChar.posZ
-			};
-
-			rot = Math.PI / 2 + (controls.getAzimuthalAngle() - Math.atan2(gp.axes[1], gp.axes[0]))
-			manChar.rotY = rot;
-			manChar.posX += Math.sin(rot);
-			manChar.posZ += Math.cos(rot);
-			manChar.refreshPos();
-
-			directionalLight.position.x = manChar.posX + playerShadowCamOffset.x;
-			directionalLight.position.z = manChar.posZ + playerShadowCamOffset.z;
+			walkChar(gp.axes[0], gp.axes[1]);
 			updateCamera = true;
 		}
 		else {
@@ -319,6 +324,30 @@ function updateGamepads() {
 			focusCameraOn(manChar.centerPoint);
 		}
 	}
+}
+
+function walkChar(moveX, moveZ) {
+	if (manChar.animState == 0) {
+		manChar.animState = 1;
+	}
+	else {
+		manChar.animState = 2;
+	}
+
+	playerCamOffset = {
+		x: camera.position.x - manChar.posX,
+		//y: camera.position.y - manChar.posY,
+		z: camera.position.z - manChar.posZ
+	};
+
+	var rot = Math.PI / 2 + (controls.getAzimuthalAngle() - Math.atan2(moveZ, moveX))
+	manChar.rotY = rot;
+	manChar.posX += Math.sin(rot);
+	manChar.posZ += Math.cos(rot);
+	manChar.refreshPos();
+
+	directionalLight.position.x = manChar.posX + playerShadowCamOffset.x;
+	directionalLight.position.z = manChar.posZ + playerShadowCamOffset.z;
 }
 
 function updateCharAnims() {
@@ -359,6 +388,7 @@ function updateCharAnims() {
 function animate() {
 	requestAnimationFrame(animate);
 	updateGamepads();
+	updateMouseControl();
 	updateCharAnims();
 	controls.update();
 	
