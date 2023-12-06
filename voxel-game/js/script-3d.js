@@ -3,7 +3,7 @@
 
 var camera, controls, scene, renderer;
 
-var raycaster, mouse, mouseLeftDown, mouseRightDown;
+var raycaster, mouse, mouseMovedX, mouseMovedY, mouseLeftDown, mouseRightDown;
 
 var groundMesh;
 var baseMat, groundMat, voxelMat;
@@ -150,9 +150,11 @@ function init() {
 	controls.rotateSpeed = 0.2;
 	controls.maxPolarAngle = controls.getPolarAngle();
 	controls.minPolarAngle = controls.getPolarAngle();
-	controls.mouseButtons = {
+	controls.maxAzimuthAngle = controls.getAzimuthalAngle();
+	controls.minAzimuthAngle = controls.maxAzimuthAngle;
+	/*controls.mouseButtons = {
 		ORBIT: THREE.MOUSE.RIGHT,
-	};
+	};*/
 	focusCameraOn(manChar.centerPoint);
 	
 	raycaster = new THREE.Raycaster();
@@ -182,9 +184,17 @@ function onWindowResize() {
 function onMouseMove(event) {
 	// calculate mouse position in normalized device coordinates
 	// (-1 to +1) for both components
+
+	var newMouseX = ((event.clientX) / viewWidth) * 2 - 1;
+	var newMouseY = - ((event.clientY - viewTop) / viewHeight) * 2 + 1;
+
+	if (mouse.x || mouse.y) {
+		mouseMovedX = newMouseX - mouse.x;
+		mouseMovedY = newMouseY - mouse.y;
+	}
 	
-	mouse.x = ((event.clientX) / viewWidth) * 2 - 1;
-	mouse.y = - ((event.clientY - viewTop) / viewHeight) * 2 + 1;
+	mouse.x = newMouseX;
+	mouse.y = newMouseY;
 }
 
 function updateMouseControl() {
@@ -200,14 +210,26 @@ function updateMouseControl() {
 		if (intersects[0]) {
 
 			var point = intersects[0].point;
-			var rot = Math.PI / 2 - (Math.atan2(point.x - manChar.posX, point.z - manChar.posZ) + controls.getAzimuthalAngle());
+			var rot = 0 - (Math.atan2(point.x - manChar.posX, point.z - manChar.posZ) - controls.getAzimuthalAngle());
 			walkChar(-Math.sin(rot), Math.cos(rot));
 			//console.log(point);
 			updateCamera = true;
 		}
 	}
 	if (mouseRightDown) {
-		
+		if (mouseMovedX) {
+			controls.maxAzimuthAngle -= (mouseMovedX * 15 * Math.PI);
+			controls.maxAzimuthAngle %= (Math.PI * 2);
+			while (controls.maxAzimuthAngle < 0) {
+				controls.maxAzimuthAngle += (Math.PI * 2);
+			}
+			controls.minAzimuthAngle = controls.maxAzimuthAngle;
+			updateCamera = true;
+			mouseMovedX = 0;
+		}
+		if (mouseMovedY) {
+			mouseMovedY = 0;
+		}
 	}
 
 	if (updateCamera) {
@@ -224,6 +246,9 @@ function onMouseLeave(event) {
 }
 
 function onMouseDown(event) {
+	mouse.x = ((event.clientX) / viewWidth) * 2 - 1;
+	mouse.y = - ((event.clientY - viewTop) / viewHeight) * 2 + 1;
+
 	if (event.button === 0) {
 		// left click
 		mouseLeftDown = true;
@@ -281,9 +306,6 @@ function onGamepadConnected(event) {
 	console.log("Gamepad connected at index %d: %s. %d buttons, %d axes.",
     gp.index, gp.id,
     gp.buttons.length, gp.axes.length);
-
-	controls.maxAzimuthAngle = controls.getAzimuthalAngle();
-	controls.minAzimuthAngle = controls.maxAzimuthAngle;
 }
 
 function updateGamepads() {
