@@ -21,7 +21,7 @@ var manChar = {
 	rotX: 0,
 	rotY: 0,
 	rotZ: 0,
-	animState: 0, // 0 = still, 1 = start walking, 2 = walking, e = end walking
+	animState: 0, // 0 = still, 1 = start walking, 2 = walking, 3 = end walking
 	animInterval: 8,
 	walkTimer: 0,
 	centerPoint: null,
@@ -218,7 +218,7 @@ function updateMouseControl() {
 	}
 	if (mouseRightDown) {
 		if (mouseMovedX) {
-			controls.maxAzimuthAngle -= (mouseMovedX * 15 * Math.PI);
+			controls.maxAzimuthAngle -= (mouseMovedX * 10 * Math.PI);
 			controls.maxAzimuthAngle %= (Math.PI * 2);
 			while (controls.maxAzimuthAngle < 0) {
 				controls.maxAzimuthAngle += (Math.PI * 2);
