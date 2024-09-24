@@ -87,10 +87,10 @@ function init()
 	voxCount = 1;
 	
 	scene = new THREE.Scene();
-	camera = new THREE.PerspectiveCamera(75, 2 / 1, 0.1, 1000);
-	camera.position.x = -3;
-	camera.position.y = 2;
-	camera.position.z = -3;
+	camera = new THREE.PerspectiveCamera(50, 2 / 1, 0.1, 1000);
+	camera.position.x = -6;
+	camera.position.y = 4;
+	camera.position.z = -6;
 	
 	directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
 	directionalLight.position.set(0, 1, 0.2);
