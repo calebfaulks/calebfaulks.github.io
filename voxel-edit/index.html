@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang = "en">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>Voxel Editor - bitKoder</title>
+		<link href='https://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+		<link href='https://fonts.googleapis.com/css?family=Arimo' rel='stylesheet' type='text/css'>
+		<link rel="stylesheet" href="css/style.css">
+		<script src="js/three.js"></script>
+		<script src="js/OrbitControls.js"></script>
+		<script src="js/script.js"></script>
+	</head>
+	<body>
+		<header>
+		</header>
+		<main id="main">
+			<div id="canvas-container"></div>
+			<button id="tool-button" class="generic-button corner-button">T</button>
+			<div id="tools-panel" class="side-panel invisible">
+				<button id="pencil-button" class="generic-button">P</button>
+				<button id="eraser-button" class="generic-button">E</button>
+			</div>
+			<button id="palette-button" class="generic-button corner-button">P</button>
+			<div id="palette-panel" class="side-panel invisible"></div>
+			<div id="screen-cover" class="hide"></div>
+		</main>
+		<footer>
+		</footer>
+		<script>
+			init();
+			animate();
+			render();
+		</script>
+	</body>
+</html>
