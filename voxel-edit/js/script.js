@@ -14,10 +14,32 @@ let screenCover;
 
 let toolsPanel, palettePanel, cameraPanel, filePanel
 let voxCount, currentTool, currentColor;
+let paletteSlots;
+
+let defaultColors =
+[
+	"#000000",
+	"#111111",
+	"#222222",
+	"#333333",
+	"#444444",
+	"#555555",
+	"#666666",
+	"#777777",
+	"#888888",
+	"#999999",
+	"#AAAAAA",
+	"#BBBBBB",
+	"#CCCCCC",
+	"#DDDDDD",
+	"#EEEEEE",
+	"#FFFFFF"
+];
 
 const TOOL_NONE 	= 0;
 const TOOL_PENCIL 	= 1;
 const TOOL_ERASER 	= 2;
+const TOOL_PAINT 	= 3;
 
 let hotbarCurrent = 0;
 let hotbarTextVisible =
@@ -48,13 +70,17 @@ let zOffset = 3;
 
 function init()
 {
+	currentTool = TOOL_PENCIL;
+	currentColor = 4;
+
 	voxels = [];
 	voxels.negativeLength = 0;
 	voxels[0] = [];
 	voxels[0].negativeLength = 0;
 	voxels[0][0] = [];
 	voxels[0][0].negativeLength = 0;
-	voxels[0][0][0] = new THREE.Mesh(new THREE.BoxGeometry(1, 1, 1), new THREE.MeshLambertMaterial({color:0x242424}));
+	voxels[0][0][0] = new THREE.Mesh(new THREE.BoxGeometry(1, 1, 1), new THREE.MeshLambertMaterial({color:defaultColors[currentColor]}));
+	voxels[0][0][0].paletteColor = currentColor;
 	
 	selectedVoxel = [0, 0, 0];
 
@@ -126,6 +152,21 @@ function init()
 	document.getElementById("palette-button").addEventListener("click", paletteButton_click, false);
 	document.getElementById("pencil-button").addEventListener("click", pencilButton_click, false);
 	document.getElementById("eraser-button").addEventListener("click", eraserButton_click, false);
+	document.getElementById("paint-button").addEventListener("click", paintButton_click, false);
+
+	paletteSlots = [];
+	for (let i = 0; i < palettePanel.children.length; i++)
+	{
+		paletteSlots[i] = palettePanel.children[i].children[0];
+		paletteSlots[i].addEventListener("click", paletteSlot_click, false);
+		paletteSlots[i].addEventListener("change", paletteSlot_change, false);
+		paletteSlots[i].value = defaultColors[i];
+		paletteSlots[i].parentElement.style.backgroundColor = defaultColors[i];
+		if (i == currentColor)
+		{
+			paletteSlots[i].parentElement.classList.add("palette-color-selected");
+		}
+	}
 	
 	window.addEventListener("resize", onWindowResize);
 	onWindowResize();
@@ -247,6 +288,10 @@ function onMouseUp(event)
 				voxCount--;
 			}
 		}
+		else if (currentTool == TOOL_PAINT)
+		{
+			voxels[selectedVoxel[0]][selectedVoxel[1]][selectedVoxel[2]].material.color = new THREE.MeshLambertMaterial({color:paletteSlots[currentColor].value}).color;
+		}
 		else if (currentTool == TOOL_PENCIL)
 		{
 			intersects = raycaster.intersectObjects(scene.children);
@@ -284,7 +329,9 @@ function onMouseUp(event)
 			}
 			
 			checkBlock(newBlock);
-			voxels[newBlock[0]][newBlock[1]][newBlock[2]] = new THREE.Mesh(new THREE.BoxGeometry(1, 1, 1), new THREE.MeshLambertMaterial({color:0x242424}));
+			let addVox = new THREE.Mesh(new THREE.BoxGeometry(1, 1, 1), new THREE.MeshLambertMaterial({color:paletteSlots[currentColor].value}));
+			addVox.paletteColor = currentColor;
+			voxels[newBlock[0]][newBlock[1]][newBlock[2]] = addVox;
 			selectMesh.position.x = newBlock[0];
 			selectMesh.position.y = newBlock[1];
 			selectMesh.position.z = newBlock[2];
@@ -431,7 +478,7 @@ function toolButton_click(event)
 }
 function paletteButton_click(event)
 {
-	palettePanel.classList.remove("invisible");
+	palettePanel.classList.toggle("invisible");
 }
 function pencilButton_click(event)
 {
@@ -442,6 +489,53 @@ function eraserButton_click(event)
 {
 	currentTool = TOOL_ERASER;
 	toolsPanel.classList.add("invisible");
+}
+function paintButton_click(event)
+{
+	currentTool = TOOL_PAINT;
+	toolsPanel.classList.add("invisible");
+}
+function paletteSlot_click(event)
+{
+	let slot = 0;
+	for (let i = 0; i < paletteSlots.length; i++)
+	{
+		if (paletteSlots[i] == event.target)
+		{
+			slot = i;
+		}
+	}
+	if (slot != currentColor)
+	{
+		currentColor = slot;
+		document.querySelector(".palette-color-selected").classList.remove("palette-color-selected");
+		event.target.parentElement.classList.add("palette-color-selected");
+		event.preventDefault();
+	}
+}
+function paletteSlot_change(event)
+{
+	event.target.parentElement.style.backgroundColor = event.target.value;
+	updateVoxelsFromPalette();
+}
+
+function updateVoxelsFromPalette()
+{
+	for (x = voxels.negativeLength; x < voxels.length; x++)
+	{
+		if (!voxels[x]) continue;
+		for (y = voxels[x].negativeLength; y < voxels[x].length; y++)
+		{
+			if (!voxels[x][y]) continue;
+			for (z = voxels[x][y].negativeLength; z < voxels[x][y].length; z++)
+			{
+				var vox = voxels[x][y][z];
+				if (!vox) continue;
+				
+				vox.material.color = new THREE.MeshLambertMaterial({color:paletteSlots[vox.paletteColor].value}).color;
+			}
+		}
+	}
 }
 
 
