@@ -11,6 +11,7 @@ const ITEM_RECAP = 6;
 const ITEM_DD_SCRIPT = 7;
 const ITEM_EMAIL_SCRIPT = 8;
 const ITEM_AGR_SCRIPT = 9;
+const ITEM_QUOTE_VALID = 10;
 
 let timeStart, timeBreakMorning, timeBreakLunch, timeBreakAfternoon, timeFinish;
 
@@ -24,6 +25,7 @@ checklistItems[ITEM_RECAP] = {text: "Strong recap"};
 checklistItems[ITEM_DD_SCRIPT] = {text: "DD script"};
 checklistItems[ITEM_EMAIL_SCRIPT] = {text: "Email script"};
 checklistItems[ITEM_AGR_SCRIPT] = {text: "AGR script"};
+checklistItems[ITEM_QUOTE_VALID] = {text: "Quote validity"};
 
 let currentCall;
 
