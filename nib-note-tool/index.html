@@ -1,0 +1,48 @@
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width">
+		<title>nib Note Tool</title>
+		<meta name="description" content="">
+		<meta name="keywords" content="">
+		<meta name="author" content="Caleb Faulks">
+		<link rel="icon" href="../assets/svg/cf.svg">
+		<link rel="preconnect" href="https://fonts.googleapis.com">
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+		<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@100;200;300;400;600&display=swap" rel="stylesheet">
+		<link rel="stylesheet" type="text/css" href="css/style.css">
+		<script src="js/script.js"></script>
+	</head>
+	<body>
+		<div class="button-group">
+			<button onclick="genericButtonEvent(this, 'Updated email, MUST READ EMAIL SCRIPT', ITEM_EMAIL_SCRIPT)">Email</button>
+			<button onclick="genericButtonEvent(this, 'Updated dd, MUST READ DD SCRIPT', ITEM_DD_SCRIPT)">DD</button>
+			<button onclick="genericButtonEvent(this, 'Applied AGR, MUST READ AGR SCRIPT', ITEM_AGR_SCRIPT)">AGR</button>
+			<button onclick="genericButtonEvent(this, 'Walked through uploading tc via nibby')">TC</button>
+			<button onclick="genericButtonEvent(this, 'Hosp enquiry - transferred to hospital')">Hosp</button>
+			<button onclick="genericButtonEvent(this, 'Hosp claim enquiry - transferred to priority')">Prio</button>
+			<button onclick="genericButtonEvent(this, 'Cancellation (reason) - transferred to retention')">Retention</button>
+		</div>
+		<div class="member-info">
+			<input id="member-name" type="text" placeholder="Name">
+			<select name="" id="id-check">
+				<option value="no-id">no ID</option>
+				<option value="full-id">full ID</option>
+				<option value="no-dob">no dob</option>
+				<option value="no-address">no address</option>
+			</select>
+		</div>
+		<textarea id="note-content" class="notes-box" placeholder="Notes"></textarea>
+		<div class="button-group">
+			<button id="clear-button">Clear</button>
+			<button id="copy-save-button">Copy & Save</button>
+		</div>
+		<div id="checklist"></div>
+		<textarea id="extra-notes" class="notes-box" placeholder="Extra notes"></textarea>
+		<div id="notes-archive"></div>
+		<script>
+			initScript();
+		</script>
+	</body>
+</html>

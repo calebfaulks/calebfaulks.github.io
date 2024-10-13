@@ -12,7 +12,7 @@ let directionalLight, directionalLight2, ambientLight;
 
 let screenCover;
 
-let toolsPanel, palettePanel, cameraPanel, filePanel
+let canvasContainer, toolsPanel, palettePanel, cameraPanel, filePanel
 let voxCount, currentTool, currentColor;
 let paletteSlots;
 
@@ -64,21 +64,17 @@ let clipboardVoxels;
 
 
 let xOffset = 0;
-let yOffset = 1;
-let zOffset = 3;
+let yOffset = 0;
+let zOffset = 0;
 
 
-function init()
-{
+function init() {
 	currentTool = TOOL_PENCIL;
 	currentColor = 4;
 
 	voxels = [];
-	voxels.negativeLength = 0;
 	voxels[0] = [];
-	voxels[0].negativeLength = 0;
 	voxels[0][0] = [];
-	voxels[0][0].negativeLength = 0;
 	voxels[0][0][0] = new THREE.Mesh(new THREE.BoxGeometry(1, 1, 1), new THREE.MeshLambertMaterial({color:defaultColors[currentColor]}));
 	voxels[0][0][0].paletteColor = currentColor;
 	
@@ -105,7 +101,9 @@ function init()
 	viewHeight = window.innerHeight;
 	renderer.setSize(viewWidth, viewHeight);
 	renderer.setClearColor(0x000000, 0);
-	document.getElementById("canvas-container").appendChild(renderer.domElement);
+
+	canvasContainer = document.getElementById("canvas-container");
+	canvasContainer.appendChild(renderer.domElement);
 	
 	controls = new THREE.OrbitControls(camera, renderer.domElement);
 	controls.enableDamping = true;
@@ -155,15 +153,13 @@ function init()
 	document.getElementById("paint-button").addEventListener("click", paintButton_click, false);
 
 	paletteSlots = [];
-	for (let i = 0; i < palettePanel.children.length; i++)
-	{
+	for (let i = 0; i < palettePanel.children.length; i++) {
 		paletteSlots[i] = palettePanel.children[i].children[0];
 		paletteSlots[i].addEventListener("click", paletteSlot_click, false);
 		paletteSlots[i].addEventListener("change", paletteSlot_change, false);
 		paletteSlots[i].value = defaultColors[i];
 		paletteSlots[i].parentElement.style.backgroundColor = defaultColors[i];
-		if (i == currentColor)
-		{
+		if (i == currentColor) {
 			paletteSlots[i].parentElement.classList.add("palette-color-selected");
 		}
 	}
@@ -172,8 +168,7 @@ function init()
 	onWindowResize();
 }
 
-function onWindowResize()
-{
+function onWindowResize() {
 	viewWidth = window.innerWidth;
 	viewHeight = window.innerHeight;
 
@@ -184,8 +179,7 @@ function onWindowResize()
 	//if (savePanel.style.display === "block") calcSaveTextBoxSize();
 }
 
-function onMouseMove(event)
-{
+function onMouseMove(event) {
 	click = false;
 	
 	// calculate mouse position in normalized device coordinates
@@ -217,18 +211,15 @@ function onMouseMove(event)
 	}
 }
 
-function onMouseLeave(event)
-{
+function onMouseLeave(event) {
 	click = false;
 }
 
-function onMouseDown(event)
-{
+function onMouseDown(event) {
 	click = true;
 }
 
-function onMouseUp(event)
-{
+function onMouseUp(event) {
 	if (!click) return;
 	click = false;
 	
@@ -247,13 +238,12 @@ function onMouseUp(event)
 	var face;
 	var foundBlock = false;
 	
-	for ( var i = 0; i < intersects.length; i++ )
-	{
+	for ( var i = 0; i < intersects.length; i++ ) {
 		var mesh = intersects[i].object;
 		
 		if (mesh === selectMesh) continue;
 		
-		// update selected block coordinates
+		// update selector coordinates
 		selectedVoxel[0] = mesh.position.x;
 		selectedVoxel[1] = mesh.position.y;
 		selectedVoxel[2] = mesh.position.z;
@@ -265,43 +255,44 @@ function onMouseUp(event)
 		break;
 	}
 	
-	if (!foundBlock) return;
+	if (!foundBlock) {
+		if (currentTool == TOOL_PAINT) {
+			canvasContainer.style.backgroundColor = paletteSlots[currentColor].value;
+		}
+		return;
+	}
 	
 	selectMesh.visible = true;
 	selectMesh.position.x = selectedVoxel[0];
 	selectMesh.position.y = selectedVoxel[1];
 	selectMesh.position.z = selectedVoxel[2];
 	
-	var currentVox = voxels[selectedVoxel[0], selectedVoxel[1], selectedVoxel[2]];
+	// var currentVox = voxels[selectedVoxel[0], selectedVoxel[1], selectedVoxel[2]];
 	
 	var structureUpdate = false;
 	
-	if (event.button === 0)
-	{
-		if (currentTool == TOOL_ERASER)
-		{
-			if (voxCount > 1)
-			{
+	if (event.button === 0) {
+		if (currentTool == TOOL_ERASER) {
+			if (voxCount > 1) {
 				voxels[selectedVoxel[0]][selectedVoxel[1]][selectedVoxel[2]] = null;
 				selectMesh.visible = false;
 				structureUpdate = true;
 				voxCount--;
 			}
 		}
-		else if (currentTool == TOOL_PAINT)
-		{
-			voxels[selectedVoxel[0]][selectedVoxel[1]][selectedVoxel[2]].material.color = new THREE.MeshLambertMaterial({color:paletteSlots[currentColor].value}).color;
+		else if (currentTool == TOOL_PAINT) {
+			paintVox = voxels[selectedVoxel[0]][selectedVoxel[1]][selectedVoxel[2]];
+			paintVox.material.color = new THREE.MeshLambertMaterial({color:paletteSlots[currentColor].value}).color;
+			paintVox.paletteColor = currentColor;
 		}
-		else if (currentTool == TOOL_PENCIL)
-		{
+		else if (currentTool == TOOL_PENCIL) {
 			intersects = raycaster.intersectObjects(scene.children);
 			face = intersects[0].face.materialIndex;
 			
 			var newBlock = [selectedVoxel[0], selectedVoxel[1], selectedVoxel[2]];
 			var f = 0;
 			
-			switch (face)
-			{
+			switch (face) {
 				case 0:
 					newBlock[0]++;
 					f = 5;
@@ -328,7 +319,7 @@ function onMouseUp(event)
 					break;
 			}
 			
-			checkBlock(newBlock);
+			checkVoxel(newBlock);
 			let addVox = new THREE.Mesh(new THREE.BoxGeometry(1, 1, 1), new THREE.MeshLambertMaterial({color:paletteSlots[currentColor].value}));
 			addVox.paletteColor = currentColor;
 			voxels[newBlock[0]][newBlock[1]][newBlock[2]] = addVox;
@@ -339,11 +330,9 @@ function onMouseUp(event)
 			voxCount++;
 		}
 		/*
-		else if (hotbarCurrent >= 4 && hotbarCurrent <= 5)
-		{
+		else if (hotbarCurrent >= 4 && hotbarCurrent <= 5) {
 			clipboardCb = blocks[selectedBlock[0]][selectedBlock[1]][selectedBlock[2]];
-			if (hotbarCurrent === 4)
-			{
+			if (hotbarCurrent === 4) {
 				if (getCbCount(2) > 1)
 				{
 					blocks[selectedBlock[0]][selectedBlock[1]][selectedBlock[2]] = null;
@@ -354,14 +343,12 @@ function onMouseUp(event)
 			}
 			else selectCbHotbarSlot(6);
 		}
-		else if (hotbarCurrent >= 6 && hotbarCurrent <= 8)
-		{
+		else if (hotbarCurrent >= 6 && hotbarCurrent <= 8) {
 			intersects = raycaster.intersectObjects(scene.children);
 			face = intersects[0].face.materialIndex;
 			
 			var b = blocks[selectedBlock[0]][selectedBlock[1]][selectedBlock[2]];
-			if (hotbarCurrent >= 6 && hotbarCurrent <= 7)
-			{
+			if (hotbarCurrent >= 6 && hotbarCurrent <= 7) {
 				var newBlock = [selectedBlock[0], selectedBlock[1], selectedBlock[2]];
 				var f = 0;
 				
@@ -408,8 +395,7 @@ function onMouseUp(event)
 				selectMesh.position.y = newBlock[1];
 				selectMesh.position.z = newBlock[2];
 			}
-			else
-			{
+			else {
 				switch (face)
 				{
 					case 0:
@@ -436,10 +422,8 @@ function onMouseUp(event)
 		}
 		*/
 	}
-	else if (event.button === 2)
-	{
-		if (voxCount > 1)
-		{
+	else if (event.button === 2) {
+		if (voxCount > 1) {
 			voxels[selectedVoxel[0]][selectedVoxel[1]][selectedVoxel[2]] = null;
 			selectMesh.visible = false;
 			structureUpdate = true;
@@ -450,13 +434,10 @@ function onMouseUp(event)
 	if (structureUpdate) updateStructure();
 }
 
-function onKeyDown(event)
-{
+function onKeyDown(event) {
 	var k = event.keyCode;
-	if (document.getElementById("screen-cover").style.display === "block")
-	{
-		if (k == 27)
-		{
+	if (document.getElementById("screen-cover").style.display === "block") {
+		if (k == 27) {
 			if (cbControls.style.display === "block") hideCbControls();
 			else if (outputCommandPanel.style.display === "block") hideOutputCommand();
 			else if (newOpenPanel.style.display === "block") hideNewOpenPanel();
@@ -464,71 +445,56 @@ function onKeyDown(event)
 			else if (settingsPanel.style.display === "block") hideSettings();
 		}
 	}
-	else
-	{
+	else {
 		if (k >= 49 && k <= 57) selectCbHotbarSlot(k - 49);
 	}
 }
 
 
 
-function toolButton_click(event)
-{
+function toolButton_click(event) {
 	toolsPanel.classList.remove("invisible");
 }
-function paletteButton_click(event)
-{
+function paletteButton_click(event) {
 	palettePanel.classList.toggle("invisible");
 }
-function pencilButton_click(event)
-{
+function pencilButton_click(event) {
 	currentTool = TOOL_PENCIL;
 	toolsPanel.classList.add("invisible");
 }
-function eraserButton_click(event)
-{
+function eraserButton_click(event) {
 	currentTool = TOOL_ERASER;
 	toolsPanel.classList.add("invisible");
 }
-function paintButton_click(event)
-{
+function paintButton_click(event) {
 	currentTool = TOOL_PAINT;
 	toolsPanel.classList.add("invisible");
 }
-function paletteSlot_click(event)
-{
+function paletteSlot_click(event) {
 	let slot = 0;
-	for (let i = 0; i < paletteSlots.length; i++)
-	{
-		if (paletteSlots[i] == event.target)
-		{
+	for (let i = 0; i < paletteSlots.length; i++) {
+		if (paletteSlots[i] == event.target) {
 			slot = i;
 		}
 	}
-	if (slot != currentColor)
-	{
+	if (slot != currentColor) {
 		currentColor = slot;
 		document.querySelector(".palette-color-selected").classList.remove("palette-color-selected");
 		event.target.parentElement.classList.add("palette-color-selected");
 		event.preventDefault();
 	}
 }
-function paletteSlot_change(event)
-{
+function paletteSlot_change(event) {
 	event.target.parentElement.style.backgroundColor = event.target.value;
 	updateVoxelsFromPalette();
 }
 
-function updateVoxelsFromPalette()
-{
-	for (x = voxels.negativeLength; x < voxels.length; x++)
-	{
+function updateVoxelsFromPalette() {
+	for (x = xOffset; x < voxels.length; x++) {
 		if (!voxels[x]) continue;
-		for (y = voxels[x].negativeLength; y < voxels[x].length; y++)
-		{
+		for (y = yOffset; y < voxels[x].length; y++) {
 			if (!voxels[x][y]) continue;
-			for (z = voxels[x][y].negativeLength; z < voxels[x][y].length; z++)
-			{
+			for (z = zOffset; z < voxels[x][y].length; z++) {
 				var vox = voxels[x][y][z];
 				if (!vox) continue;
 				
@@ -550,33 +516,26 @@ function updateVoxelsFromPalette()
 
 
 
-function selectCbHotbarSlot(num)
-{
+/*function selectCbHotbarSlot(num) {
 	var cbHotbarChildren = document.getElementById("cb-hotbar").children;
-	for (var i = 0; i < cbHotbarChildren.length; i++)
-	{
+	for (var i = 0; i < cbHotbarChildren.length; i++) {
 		if (i !== num) cbHotbarChildren[i].className = "";
-		else
-		{
+		else {
 			hotbarCurrent = i;
 			cbHotbarChildren[i].className = "selected";
-			if (!hotbarTextVisible[i])
-			{
+			if (!hotbarTextVisible[i]) {
 				flashText(cbHotbarChildren[i].children[0], 300);
 				hotbarTextCooldown(i, 300);
 			}
 		}
 	}
 	var toolHotbarChildren = document.getElementById("tool-hotbar").children;
-	for (var i = 0; i < toolHotbarChildren.length; i++)
-	{
+	for (var i = 0; i < toolHotbarChildren.length; i++) {
 		if (i + cbHotbarChildren.length !== num) toolHotbarChildren[i].className = "";
-		else
-		{
+		else {
 			hotbarCurrent = i + cbHotbarChildren.length;
 			toolHotbarChildren[i].className = "selected";
-			if (!hotbarTextVisible[i + cbHotbarChildren.length])
-			{
+			if (!hotbarTextVisible[i + cbHotbarChildren.length]) {
 				flashText(toolHotbarChildren[i].children[0], 300);
 				hotbarTextCooldown(i + cbHotbarChildren.length, 300);
 			}
@@ -584,8 +543,7 @@ function selectCbHotbarSlot(num)
 	}
 }
 
-function flashText(txt, time)
-{
+function flashText(txt, time) {
 	txt.style.display = "inline";
 	txt.style.transitionDuration = "0.5s";
 	setTimeout(function() { txt.className = ""; }, 1);
@@ -593,40 +551,34 @@ function flashText(txt, time)
 	setTimeout(function() { txt.style.display = "none"; txt.style.transitionDuration = "0s"; }, time + 1000);
 }
 
-function hotbarTextCooldown(num, time)
-{
+function hotbarTextCooldown(num, time) {
 	hotbarTextVisible[num] = true;
 	setTimeout(function() { hotbarTextVisible[num] = false; }, time + 1000);
 }
 
-function showTabs()
-{
+function showTabs() {
 	tabContainer.style.display = "inline";
 	tabContainerMenu.style.display = "inline";
 	setTimeout(function() { tabContainer.className = ""; tabContainerMenu.className = ""; }, 1);
 }
 
-function hideTabs()
-{
+function hideTabs() {
 	tabContainer.className = "hide";
 	tabContainerMenu.className = "hide";
 	setTimeout(function() { tabContainer.style.display = "none"; tabContainerMenu.style.display = "none"; }, 300);
 }
 
-function showScreenCover()
-{
+function showScreenCover() {
 	screenCover.style.display = "block";
 	setTimeout(function() { screenCover.className = ""; }, 1);
 }
 
-function hideScreenCover()
-{
+function hideScreenCover() {
 	screenCover.className = "hide";
 	setTimeout(function() { screenCover.style.display = "none"; }, 300);
 }
 
-function openCbControls()
-{	
+function openCbControls() {	
 	updateCbControls();
 	showScreenCover();
 	hideTabs();
@@ -635,112 +587,88 @@ function openCbControls()
 	setTimeout(function() { document.getElementById("cb-command-input").focus(); }, 500);
 }
 
-function cbCommandInput_keyUp(event)
-{
-	if (event.keyCode === 13)
-	{
+function cbCommandInput_keyUp(event) {
+	if (event.keyCode === 13) {
 		document.getElementById("cb-command-input").blur();
 		saveCbChanges(null);
 	}
 }
 
-function cbControlsButtonPress(btn)
-{
+function cbControlsButtonPress(btn) {
 	var t = btn.innerHTML;
-	for (var i = 0; i < buttonNames.length; i++)
-	{
-		if (t === buttonNames[i])
-		{
+	for (var i = 0; i < buttonNames.length; i++) {
+		if (t === buttonNames[i]) {
 			btn.innerHTML = buttonNames[(i + 1) % buttonNames.length];
 			btn.title = buttonTitles[(i + 1) % buttonNames.length];
 		}
 	}
-	if (t === "X")
-	{
+	if (t === "X") {
 		btn.innerHTML = "O";
 		btn.title = "Track Output: On";
 	}
-	else if (t === "O")
-	{
+	else if (t === "O") {
 		btn.innerHTML = "X";
 		btn.title = "Track Output: Off";
 	}
-	else if (t === "Unconditional")
-	{
+	else if (t === "Unconditional") {
 		btn.innerHTML = "Conditional";
 		btn.title = "Conditional - runs only when the command block behind it succeeded";
 	}
-	else if (t === "Conditional")
-	{
+	else if (t === "Conditional") {
 		btn.innerHTML = "Unconditional";
 		btn.title = "Unconditional - runs regardless of whether the command block behind it succeeded";
 	}
-	else if (t === "Needs Redstone")
-	{
+	else if (t === "Needs Redstone") {
 		btn.innerHTML = "Always Active";
 		btn.title = "Always Active - does not require redstone power";
 	}
-	else if (t === "Always Active")
-	{
+	else if (t === "Always Active") {
 		btn.innerHTML = "Needs Redstone";
 		btn.title = "Needs Redstone - requires redstone power";
 	}
-	else if (t === "Update Last Execution: On")
-	{
+	else if (t === "Update Last Execution: On") {
 		btn.innerHTML = "Update Last Execution: Off";
 		btn.title = "Can run multiple times per tick";
 	}
-	else if (t === "Update Last Execution: Off")
-	{
+	else if (t === "Update Last Execution: Off") {
 		btn.innerHTML = "Update Last Execution: On";
 		btn.title = "Can run only once per tick";
 	}
 }
 
-function saveCbChanges()
-{
+function saveCbChanges() {
 	var cb = voxels[selectedVoxel[0]][selectedVoxel[1]][selectedVoxel[2]];
 	
 	cb.command = document.getElementById("cb-command-input").value;
 	var cbTypeText = document.getElementById("cb-type").innerHTML;
-	for (var i = 0; i < buttonNames.length; i++)
-	{
-		if (cbTypeText === buttonNames[i])
-		{
+	for (var i = 0; i < buttonNames.length; i++) {
+		if (cbTypeText === buttonNames[i]) {
 			cb.cbType = i;
 			break;
 		}
 	}
-	if (document.getElementById("cb-conditional").innerHTML === "Unconditional")
-	{
+	if (document.getElementById("cb-conditional").innerHTML === "Unconditional") {
 		cb.conditional = false;
 	}
-	else
-	{
+	else {
 		cb.conditional = true;
 	}
-	if (document.getElementById("cb-auto").innerHTML === "Needs Redstone")
-	{
+	if (document.getElementById("cb-auto").innerHTML === "Needs Redstone") {
 		cb.active = false;
 	}
-	else
-	{
+	else {
 		cb.active = true;
 	}
-	if (document.getElementById("cb-update-last-execution").innerHTML === "Update Last Execution: Off")
-	{
+	if (document.getElementById("cb-update-last-execution").innerHTML === "Update Last Execution: Off") {
 		cb.updateLastExecution = false;
 	}
-	else
-	{
+	else {
 		cb.updateLastExecution = true;
 	}
-	if (document.getElementById("cb-track-output").innerHTML === "X")
-	{
+	if (document.getElementById("cb-track-output").innerHTML === "X") {
 		cb.output = false;
 	}
-	else
-	{
+	else {
 		cb.output = true;
 	}
 	
@@ -748,8 +676,7 @@ function saveCbChanges()
 	hideCbControls();
 }
 
-function hideCbControls()
-{
+function hideCbControls() {
 	var c = cbControls.children;
 	for (i = 0; i < c.length; i++) c[i].blur();
 	selectMesh.visible = false;
@@ -758,8 +685,7 @@ function hideCbControls()
 	setTimeout(function() { cbControls.style.display = "none"; }, 500);
 }
 
-function updateCbControls()
-{
+function updateCbControls() {
 	var cb = voxels[selectedVoxel[0]][selectedVoxel[1]][selectedVoxel[2]];
 	
 	document.getElementById("cb-command-input").value = cb.command;
@@ -770,51 +696,42 @@ function updateCbControls()
 	var cbTrackOutputButton = document.getElementById("cb-track-output");
 	cbTypeButton.innerHTML = buttonNames[cb.cbType];
 	cbTypeButton.title = buttonTitles[cb.cbType];
-	if (cb.conditional) 
-	{
+	if (cb.conditional)  {
 		cbConditionalButton.innerHTML = "Conditional";
 		cbConditionalButton.title = "Conditional - runs only when the command block behind it succeeded";
 	}
-	else
-	{
+	else {
 		cbConditionalButton.innerHTML = "Unconditional";
 		cbConditionalButton.title = "Unconditional - runs regardless of whether the command block behind it succeeded";
 	}
-	if (cb.active)
-	{
+	if (cb.active) {
 		cbAutoButton.innerHTML = "Always Active";
 		cbAutoButton.title = "Always Active - does not require redstone power";
 	}
-	else
-	{
+	else {
 		cbAutoButton.innerHTML = "Needs Redstone";
 		cbAutoButton.title = "Needs Redstone - requires redstone power";
 	}
-	if (cb.updateLastExecution)
-	{
+	if (cb.updateLastExecution) {
 		cbUpdateLastExecutionButton.innerHTML = "Update Last Execution: On";
 		cbUpdateLastExecutionButton.title = "Can run only once per tick";
 	}
-	else
-	{
+	else {
 		cbUpdateLastExecutionButton.innerHTML = "Update Last Execution: Off";
 		cbUpdateLastExecutionButton.title = "Can run multiple times per tick";
 	}
-	if (cb.output)
-	{
+	if (cb.output) {
 		cbTrackOutputButton.innerHTML = "O";
 		cbTrackOutputButton.title = "Track Output: On";
 	}
-	else
-	{
+	else {
 		cbTrackOutputButton.innerHTML = "X";
 		cbTrackOutputButton.title = "Track Output: Off";
 	}
 }
 
 
-function openSetupCommands()
-{
+function openSetupCommands() {
 	if (setupCommandsPanel.style.display === "block") return;
 	
 	document.getElementById("pre-setup-text").value = preCommands.join("\n");
@@ -826,16 +743,14 @@ function openSetupCommands()
 	setTimeout(function() { setupCommandsPanel.className = ""; }, 1);
 }
 
-function saveSetupCommands()
-{
+function saveSetupCommands() {
 	preCommands = document.getElementById("pre-setup-text").value.split("\n");
 	postCommands = document.getElementById("post-setup-text").value.split("\n");
 	
 	hideSetupCommands();
 }
 
-function hideSetupCommands()
-{
+function hideSetupCommands() {
 	var c = setupCommandsPanel.children;
 	for (i = 0; i < c.length; i++) c[i].blur();
 	setupCommandsPanel.className = "hide";
@@ -844,8 +759,7 @@ function hideSetupCommands()
 }
 
 
-function openOutputCommand()
-{
+function openOutputCommand() {
 	if (outputCommandPanel.style.display === "block") return;
 	
 	updateOneCommand();
@@ -856,8 +770,7 @@ function openOutputCommand()
 	document.getElementById("output-command-text").click();
 }
 
-function displayOutputCommand(num)
-{
+function displayOutputCommand(num) {
 	cmdIndex += num;
 	cmdIndex %= cmds.length;
 	while (cmdIndex < 0) cmdIndex += cmds.length;
@@ -866,8 +779,7 @@ function displayOutputCommand(num)
 	document.getElementById("output-command-text").value = cmds[cmdIndex];
 }
 
-function hideOutputCommand()
-{
+function hideOutputCommand() {
 	var c = outputCommandPanel.children;
 	for (i = 0; i < c.length; i++) c[i].blur();
 	outputCommandPanel.className = "hide";
@@ -876,8 +788,7 @@ function hideOutputCommand()
 }
 
 
-function confirmSave(btn)
-{
+function confirmSave(btn) {
 	document.activeElement.blur();
 	newOpenPanel.className = "hide";
 	setTimeout(function() { saveProject(); }, 200);
@@ -885,56 +796,46 @@ function confirmSave(btn)
 	
 }
 
-function rejectSave(btn)
-{
+function rejectSave(btn) {
 	document.activeElement.blur();
 	hideNewOpenPanel(btn);
 	if (newP) newProject(false);
 	else if (load) loadProject(false);
 }
 
-function cancelNewOpen(btn)
-{
+function cancelNewOpen(btn) {
 	document.activeElement.blur();
 	hideNewOpenPanel(btn);
 	newP = false;
 	load = false;
 }
 
-function newProject(check)
-{
+function newProject(check) {
 	newP = check;
-	if (check)
-	{
+	if (check) {
 		showNewOpenPanel();
 	}
-	else
-	{
+	else {
 		createNewProject(true);
 	}
 }
 
-function loadProject(check)
-{
+function loadProject(check) {
 	load = check;
-	if (check)
-	{
+	if (check) {
 		showNewOpenPanel();
 	}
-	else
-	{
+	else {
 		document.getElementById("load-file").click();
 	}
 }
 
-function loadFiles(elem)
-{
+function loadFiles(elem) {
 	var files = elem.files;
 	if (files.length <= 0) return;
 	
 	var reader = new FileReader();
-	reader.onload = function()
-	{
+	reader.onload = function() {
 		loadData(reader.result);
 	};
 	reader.readAsText(files[0]);
@@ -942,8 +843,7 @@ function loadFiles(elem)
 	elem.value = "";
 }
 
-function saveProject()
-{
+function saveProject() {
 	var s = getSaveData();
 	saveTextBox.value = s;
 	showSavePanel();
@@ -951,16 +851,14 @@ function saveProject()
 	download('project.txt', s)
 }
 
-function showNewOpenPanel()
-{
+function showNewOpenPanel() {
 	showScreenCover();
 	hideTabs();
 	newOpenPanel.style.display = "block";
 	setTimeout(function() { newOpenPanel.className = ""; }, 1);
 }
 
-function hideNewOpenPanel()
-{
+function hideNewOpenPanel() {
 	var c = newOpenPanel.children;
 	for (i = 0; i < c.length; i++) c[i].blur();
 	newOpenPanel.className = "hide";
@@ -968,8 +866,7 @@ function hideNewOpenPanel()
 	setTimeout(function() { newOpenPanel.style.display = "none"; }, 500);
 }
 
-function showSavePanel()
-{
+function showSavePanel() {
 	showScreenCover();
 	hideTabs();
 	savePanel.style.display = "block";
@@ -977,8 +874,7 @@ function showSavePanel()
 	calcSaveTextBoxSize();
 }
 
-function hideSavePanel()
-{
+function hideSavePanel() {
 	var c = savePanel.children;
 	for (i = 0; i < c.length; i++) c[i].blur();
 	savePanel.className = "hide";
@@ -989,8 +885,7 @@ function hideSavePanel()
 	else if (load) loadProject(false);
 }
 
-function openSettings()
-{
+function openSettings() {
 	showScreenCover();
 	hideTabs();
 	settingsPanel.style.display = "block";
@@ -1001,18 +896,15 @@ function openSettings()
 	zOffsetInput.value = "" + zOffset;
 }
 
-function parseOffset(elem)
-{
+function parseOffset(elem) {
 	var t = elem.value * 1;
 	if (elem.value === "") t = 0;
-	if (t > 0 && !elem.value.includes(" ") && !elem.value.includes("."))
-	{
+	if (t > 0 && !elem.value.includes(" ") && !elem.value.includes(".")) {
 		if (elem.id === "offset-x") xOffsetInputPrev = elem.value;
 		if (elem.id === "offset-y") yOffsetInputPrev = elem.value;
 		if (elem.id === "offset-z") zOffsetInputPrev = elem.value;
 	}
-	else if (elem.value !== "")
-	{
+	else if (elem.value !== "") {
 		if (elem.id === "offset-x") elem.value = xOffsetInputPrev;
 		if (elem.id === "offset-y") elem.value = yOffsetInputPrev;
 		if (elem.id === "offset-z") elem.value = zOffsetInputPrev;
@@ -1020,25 +912,21 @@ function parseOffset(elem)
 
 }
 
-function checkOffset(elem)
-{
-	if (elem.value === "")
-	{
+function checkOffset(elem) {
+	if (elem.value === "") {
 		if (elem.id === "offset-x") elem.value = "" + xOffset;
 		if (elem.id === "offset-y") elem.value = "" + yOffset;
 		if (elem.id === "offset-z") elem.value = "" + zOffset;
 	}
 }
 
-function hideSettings(sav)
-{
+function hideSettings(sav) {
 	document.activeElement.blur();
 	settingsPanel.className = "hide";
 	setTimeout(function() { hideScreenCover(); showTabs(); }, 200);
 	setTimeout(function() { settingsPanel.style.display = "none"; }, 500);
 
-	if (sav)
-	{
+	if (sav) {
 		xOffset = Number(xOffsetInput.value);
 		yOffset = Number(yOffsetInput.value);
 		zOffset = Number(zOffsetInput.value);
@@ -1046,17 +934,13 @@ function hideSettings(sav)
 }
 
 
-function getCbCount(num)
-{
+function getCbCount(num) {
 	var cbCount = 0;
-	for (x = voxels.negativeLength; x < voxels.length; x++)
-	{
+	for (x = voxels.negativeLength; x < voxels.length; x++) {
 		if (typeof voxels[x] == "undefined") continue;
-		for (y = voxels[x].negativeLength; y < voxels[x].length; y++)
-		{
+		for (y = voxels[x].negativeLength; y < voxels[x].length; y++) {
 			if (typeof voxels[x][y] == "undefined") continue;
-			for (z = voxels[x][y].negativeLength; z < voxels[x][y].length; z++)
-			{
+			for (z = voxels[x][y].negativeLength; z < voxels[x][y].length; z++) {
 				var cbTemp = voxels[x][y][z];
 				if (typeof cbTemp == "undefined" || cbTemp === null) continue;
 				
@@ -1066,52 +950,42 @@ function getCbCount(num)
 		}
 	}
 	return cbCount;
-}
+}*/
 
-function checkBlock(b)
-{			
-	if (typeof voxels[b[0]] == "undefined")
-	{
-		voxels[b[0]] = [];
-		voxels[b[0]].negativeLength = 0;
+function checkVoxel(v) {			
+	if (!voxels[v[0]]) {
+		voxels[v[0]] = [];
+		voxels[v[0]].negativeLength = 0;
 	}
-	if (typeof voxels[b[0]][b[1]] == "undefined")
-	{
-		voxels[b[0]][b[1]] = [];
-		voxels[b[0]][b[1]].negativeLength = 0;
+	if (!voxels[v[0]][v[1]]) {
+		voxels[v[0]][v[1]] = [];
+		voxels[v[0]][v[1]].negativeLength = 0;
 	}
 
-	if (b[0] < 0)
-	{
-		if (voxels.negativeLength > b[0]) voxels.negativeLength = b[0];
+	if (v[0] < xOffset) {
+		xOffset = v[0];
 	}
-	if (b[1] < 0)
-	{
-		if (voxels[b[0]].negativeLength > b[1]) voxels[b[0]].negativeLength = b[1];
+	if (v[1] < yOffset) {
+		yOffset = v[1];
 	}
-	if (b[2] < 0)
-	{
-		if (voxels[b[0]][b[1]].negativeLength > b[2]) voxels[b[0]][b[1]].negativeLength = b[2];
+	if (v[2] < zOffset) {
+		zOffset = v[2];
 	}
 }
 
-function updateStructure()
-{
+function updateStructure() {
 	scene = new THREE.Scene();
 	
-	for (x = voxels.negativeLength; x < voxels.length; x++)
-	{
-		if (typeof voxels[x] == "undefined") continue;
-		for (y = voxels[x].negativeLength; y < voxels[x].length; y++)
-		{
-			if (typeof voxels[x][y] == "undefined") continue;
-			for (z = voxels[x][y].negativeLength; z < voxels[x][y].length; z++)
-			{
-				var cb = voxels[x][y][z];
-				if (typeof cb == "undefined" || cb === null) continue;
+	for (x = xOffset; x < voxels.length; x++) {
+		if (!voxels[x]) continue;
+		for (y = yOffset; y < voxels[x].length; y++) {
+			if (!voxels[x][y]) continue;
+			for (z = zOffset; z < voxels[x][y].length; z++) {
+				var vox = voxels[x][y][z];
+				if (!vox) continue;
 				
-				cb.position.set(x, y, z);
-				scene.add(cb);
+				vox.position.set(x, y, z);
+				scene.add(vox);
 			}
 		}
 	}
@@ -1123,37 +997,30 @@ function updateStructure()
 	scene.add(ambientLight);
 }
 
-function updateOneCommand()
-{
+function updateOneCommand() {
 	cmds = [];
 	
 	var command = "summon falling_block ~ ~.55 ~ {Time:1,DropItem:0,Block:redstone_block,Passengers:[{id:falling_block,Time:1,DropItem:0,Block:activator_rail}";
 	var endSection = ",{id:commandblock_minecart,Command:\"blockdata ~ ~-2 ~ {auto:0,SuccessCount:0b,Command:\\\"-Insert Command 2-\\\"}\"},{id:commandblock_minecart,Command:\"setblock ~ ~1 ~ command_block 0 - {auto:1,Command:\\\"fill ~ ~-2 ~ ~ ~ ~ air\\\"}\"},{id:commandblock_minecart,Command:\"kill @e[type=commandblock_minecart,r=0]\"}]}";
 	var s = "";
-	for (ic = 0; ic < preCommands.length; ic++)
-	{
+	for (ic = 0; ic < preCommands.length; ic++) {
 		if (preCommands[ic] == "" || preCommands[ic].startsWith("#"))
 			continue;
 		s = ",{id:commandblock_minecart,Command:" + format(preCommands[ic]) + "}";
-		if (command.length + s.length + endSection.length < 32500)
-		{
+		if (command.length + s.length + endSection.length < 32500) {
 			command += s;
 		}
-		else
-		{
+		else {
 			cmds[cmds.length] = command + endSection;
 			command = "summon falling_block ~ ~.55 ~ {Time:1,DropItem:0,Block:redstone_block,Passengers:[{id:falling_block,Time:1,DropItem:0,Block:activator_rail}" + s;
 			endSection = ",{id:commandblock_minecart,Command:\"blockdata ~ ~-2 ~ {auto:0,SuccessCount:0b,Command:\\\"-Insert Command " + (cmds.length + 1) + "-\\\"}\"},{id:commandblock_minecart,Command:\"setblock ~ ~1 ~ command_block 0 - {auto:1,Command:\\\"fill ~ ~-2 ~ ~ ~ ~ air\\\"}\"},{id:commandblock_minecart,Command:\"kill @e[type=commandblock_minecart,r=0]\"}]}";
 		}
 	}
-	/*for (x = blocks.negativeLength; x < blocks.length; x++)
-	{
+	/*for (x = blocks.negativeLength; x < blocks.length; x++) {
 		if (typeof blocks[x] == "undefined") continue;
-		for (y = blocks[x].negativeLength; y < blocks[x].length; y++)
-		{
+		for (y = blocks[x].negativeLength; y < blocks[x].length; y++) {
 			if (typeof blocks[x][y] == "undefined") continue;
-			for (z = blocks[x][y].negativeLength; z < blocks[x][y].length; z++)
-			{
+			for (z = blocks[x][y].negativeLength; z < blocks[x][y].length; z++) {
 				var cb = blocks[x][y][z];
 				if (typeof cb == "undefined" || cb === null) continue;
 				
@@ -1171,17 +1038,14 @@ function updateOneCommand()
 			}
 		}
 	}*/
-	for (ec = 0; ec < postCommands.length; ec++)
-	{
+	for (ec = 0; ec < postCommands.length; ec++) {
 		if (postCommands[ec] == "" || postCommands[ec].startsWith("#"))
 			continue;
 		s = ",{id:commandblock_minecart,Command:" + format(postCommands[ec]) + "}";
-		if (command.length + s.length + endSection.length < 32500)
-		{
+		if (command.length + s.length + endSection.length < 32500) {
 			command += s;
 		}
-		else
-		{
+		else {
 			cmds[cmds.length] = command + endSection;
 			command = "summon falling_block ~ ~.55 ~ {Time:1,DropItem:0,Block:redstone_block,Passengers:[{id:falling_block,Time:1,DropItem:0,Block:activator_rail}" + s;
 			endSection = ",{id:commandblock_minecart,Command:\"blockdata ~ ~-2 ~ {auto:0,SuccessCount:0b,Command:\\\"-Insert Command " + (cmds.length + 1) + "-\\\"}\"},{id:commandblock_minecart,Command:\"setblock ~ ~1 ~ command_block 0 - {auto:1,Command:\\\"fill ~ ~-2 ~ ~ ~ ~ air\\\"}\"},{id:commandblock_minecart,Command:\"kill @e[type=commandblock_minecart,r=0]\"}]}";
@@ -1194,26 +1058,20 @@ function updateOneCommand()
 	if (cmds.length === 1) cmdIndex = 0;
 	document.getElementById("output-command-text").value = cmds[cmdIndex];
 	
-	if (cmds.length > 1)
-	{
+	if (cmds.length > 1) {
 		document.getElementById("output-scroll-commands").className = "";
 		document.getElementById("output-command-index").innerHTML = "Command " + (cmdIndex + 1);
 	}
-	else
-	{
+	else {
 		document.getElementById("output-scroll-commands").className = "hide";
 	}
 }
 
 
-function createNewProject(setup)
-{
+function createNewProject(setup) {
 	voxels = [];
-	voxels.negativeLength = 0;
 	voxels[0] = [];
-	voxels[0].negativeLength = 0;
 	voxels[0][0] = [];
-	voxels[0][0].negativeLength = 0;
 	
 	selectedVoxel = [];
 	selectedVoxel[0] = 0;
@@ -1230,8 +1088,7 @@ function createNewProject(setup)
 	yOffset = 1;
 	zOffset = 3;
 	
-	if (setup)
-	{
+	if (setup) {
 		voxels[0][0][0] = new CommandBlock();
 		voxels[0][0][0].direction = 1;
 		controls.target = new THREE.Vector3(0, 0, 0);
@@ -1242,8 +1099,7 @@ function createNewProject(setup)
 	}
 }
 
-function loadData(loadCode)
-{
+function loadData(loadCode) {
 	createNewProject(false);
 	
 	var xMin = 0;
@@ -1255,8 +1111,7 @@ function loadData(loadCode)
 	
 	var loadVersion = "a-0";
 	
-	if (loadCode.startsWith("version:"))
-	{
+	if (loadCode.startsWith("version:")) {
 		loadVersion = loadCode.slice(8, loadCode.indexOf("\n"));
 		loadCode = loadCode.slice(loadCode.indexOf("\n") + 1);
 	}
@@ -1268,29 +1123,24 @@ function loadData(loadCode)
 	console.log(typeof("a-1"));
 	console.log(loadVersion === "a-1");
 	
-	if (loadVersion === "a-0" || loadVersion === "a-1")
-	{
+	if (loadVersion === "a-0" || loadVersion === "a-1") {
 		console.log("test");
-		for (i = 0; i < loadChunks.length; i++)
-		{
-			if (loadChunks[i].startsWith("pre"))
-			{
+		for (i = 0; i < loadChunks.length; i++) {
+			if (loadChunks[i].startsWith("pre")) {
 				var chunkLines = loadChunks[i].split("\n");
 				for (ii = 1; ii < chunkLines.length; ii++)
 				{
 					if (chunkLines[ii].startsWith("-")) preCommands[ii - 1] = chunkLines[ii].slice(1);
 				}
 			}
-			else if (loadChunks[i].startsWith("post"))
-			{
+			else if (loadChunks[i].startsWith("post")) {
 				var chunkLines = loadChunks[i].split("\n");
 				for (ii = 1; ii < chunkLines.length; ii++)
 				{
 					if (chunkLines[ii].startsWith("-")) postCommands[ii - 1] = chunkLines[ii].slice(1);
 				}
 			}
-			else if (loadChunks[i].startsWith("cb"))
-			{
+			else if (loadChunks[i].startsWith("cb")) {
 				var cbTemp = new CommandBlock();
 				var xTemp = 0;
 				var yTemp = 0;
@@ -1424,8 +1274,7 @@ function loadData(loadCode)
 					}
 				}
 			}
-			else
-			{
+			else {
 				var chunkLines = loadChunks[i].split(new RegExp('[\n|,]', 'g'));
 				for (ii = 0; ii < chunkLines.length; ii++)
 				{
@@ -1442,53 +1291,37 @@ function loadData(loadCode)
 	updateStructure();
 }
 
-function getSaveData()
-{
-	var saveCode = "version:" + EDITOR_VERSION + "\nxOffset:" + xOffset + "\nyOffset:" + yOffset + "\nzOffset:" + zOffset;
+function getSaveData() {
+	var saveCode = "version:" + EDITOR_VERSION;
 	
-	if (preCommands.length > 0) saveCode += "\n#pre";
-	for (ic = 0; ic < preCommands.length; ic++)
-	{
-		saveCode += "\n-" + preCommands[ic];
+	//saveCode += `\n\noff\n,,`;
+	saveCode += "\n\npal";
+	for (i = 0; i < paletteSlots.length; i++) {
+		saveCode += "\n" + paletteSlots[i].value;
 	}
-	saveCode += "\n#cb";
-	for (x = voxels.negativeLength; x < voxels.length; x++)
-	{
-		if (typeof voxels[x] == "undefined" || voxels[x] === null) continue;
-		for (y = voxels[x].negativeLength; y < voxels[x].length; y++)
-		{
-			if (typeof voxels[x][y] == "undefined" || voxels[x][y] === null) continue;
-			for (z = voxels[x][y].negativeLength; z < voxels[x][y].length; z++)
-			{
-				var cb = voxels[x][y][z];
-				if (typeof cb == "undefined" || cb === null) continue;
-				
-				saveCode += "\n" + x + "," + y + "," + z;
-				if (cb.cbType > 0 || cb.direction > 0 || cb.conditional || cb.active || cb.output || !cb.updateLastExecution) saveCode += "\n";
-				if (cb.cbType > 0) saveCode += buttonNames[cb.cbType].toLowerCase() + "|";
-				if (cb.direction > 0) saveCode += facing[cb.direction].toLowerCase() + "|";
-				if (cb.conditional) saveCode += "conditional|";
-				if (cb.active) saveCode += "active|";
-				if (cb.output) saveCode += "output|";
-				if (!cb.updateLastExecution) saveCode += "no-update|";
-				if (saveCode.endsWith("|")) saveCode = saveCode.slice(0, -1);
-				if (cb.nbt !== "") saveCode += "\nnbt:" + cb.nbt;
-				if (cb.command !== "") saveCode += "\ncmd:" + cb.command;
-				saveCode += "\n-";
+	saveCode += "\n\n\nvox";
+	for (x = xOffset; x < voxels.length; x++) {
+		saveCode += "\n---";
+		if (!voxels[x]) continue;
+		for (y = yOffset; y < voxels[x].length; y++) {
+			saveCode += "\n";
+			if (!voxels[x][y]) continue;
+			for (z = zOffset; z < voxels[x][y].length; z++) {
+				var vox = voxels[x][y][z];
+				if (vox)
+				{
+					saveCode += `${vox.paletteColor}`;
+				}
+
+				saveCode += ",";
 			}
 		}
-	}
-	if (postCommands.length > 0) saveCode += "\n#post";
-	for (ec = 0; ec < postCommands.length; ec++)
-	{
-		saveCode += "\n-" + postCommands[ec];
 	}
 	
 	return saveCode;
 }
 
-function download(filename, txt)
-{
+function download(filename, txt) {
 	var elem = document.createElement('a');
 	elem.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(txt));
 	elem.setAttribute('download', filename);
@@ -1502,16 +1335,14 @@ function download(filename, txt)
 }
 
 
-function animate()
-{
+function animate() {
 	requestAnimationFrame(animate);
 	controls.update();
 	
 	render();
 }
 
-function render()
-{
+function render() {
 	renderer.render(scene, camera);
 }
 -->

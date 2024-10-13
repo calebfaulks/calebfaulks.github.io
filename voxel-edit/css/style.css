@@ -99,6 +99,7 @@ canvas
 	width: 80px;
 	height: 80px;
 	margin: 20px;
+	user-select: none;
 }
 
 .corner-button
