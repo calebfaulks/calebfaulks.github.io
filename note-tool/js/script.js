@@ -12,8 +12,10 @@ const ITEM_DD_SCRIPT = 7;
 const ITEM_EMAIL_SCRIPT = 8;
 const ITEM_AGR_SCRIPT = 9;
 const ITEM_QUOTE_VALID = 10;
+const ITEM_RECORDED = 11;
+const ITEM_COVER_REVIEW = 12;
 
-let timeStart, timeBreakMorning, timeBreakLunch, timeBreakAfternoon, timeFinish;
+let scheduleItems = [];
 
 let checklistItems = [];
 checklistItems[ITEM_ID] = {text: "Check ID"};
@@ -26,6 +28,8 @@ checklistItems[ITEM_DD_SCRIPT] = {text: "DD script"};
 checklistItems[ITEM_EMAIL_SCRIPT] = {text: "Email script"};
 checklistItems[ITEM_AGR_SCRIPT] = {text: "AGR script"};
 checklistItems[ITEM_QUOTE_VALID] = {text: "Quote validity"};
+checklistItems[ITEM_RECORDED] = {text: "Call recorded disclaimer"};
+checklistItems[ITEM_COVER_REVIEW] = {text: "Cover Review"};
 
 let currentCall;
 
@@ -117,6 +121,18 @@ function addChecklistItem(item) {
     </div>`;
 }
 
+function removeChecklistItem(item) {
+    let checklistChildren = checklist.children;
+
+    for (let i = checklistChildren.length - 1; i >= 0; i--) {
+        if (checklistChildren[i].querySelector("span").innerText == checklistItems[item].text) {
+            checklist.removeChild(checklistChildren[i]);
+            currentCall.callStats[item] = undefined;
+            break;
+        }
+    }
+}
+
 function addCallToArchive(call) {
     callsArchive.push(call);
     notesArchive.innerHTML = `
@@ -127,10 +143,43 @@ function addCallToArchive(call) {
 }
 
 
-function genericButtonEvent(element, addText, addCheck) {
+function addScheduleItem(element) {
+    element.outerHTML = `
+    <div class="schedule-item">
+        <button class="minus-button" onclick="removeScheduleItem(this)">-</button><input type="time" class="time-picker" value="12:00" onchange="updateScheduleOrder(this)"><input type="text" value="New Item">
+    </div>
+    ${element.outerHTML}`;
+}
+
+function removeScheduleItem(element) {
+    element.parentElement.outerHTML = "";
+}
+
+function updateScheduleOrder(element) {
+    let itemTime = new Date(new Date().toString().slice(0, 16) + element.value);
+    let tempScheduleItem = element.parentElement.cloneNode(true);
+    let parentContainer = element.closest(".collapsible-inner");
+    parentContainer.removeChild(element.parentElement);
+    let scheduleElements = parentContainer.children;
+
+    for (let i = 0; i < scheduleElements.length - 1; i++) {
+        let iTime = new Date(new Date().toString().slice(0, 16) + scheduleElements[i].querySelector(".time-picker").value);
+        if (iTime.valueOf() >= itemTime.valueOf()) {
+            parentContainer.insertBefore(tempScheduleItem, scheduleElements[i]);
+            return;
+        }
+    }
+
+    parentContainer.insertBefore(tempScheduleItem, parentContainer.querySelector(".plus-button"));
+}
+
+
+function genericButtonEvent(element, addText, addCheck, addSecondCheck, addThirdCheck) {
     if (noteContent.value != "") noteContent.value += "\n"
     noteContent.value += addText;
     if (addCheck) addChecklistItem(addCheck);
+    if (addSecondCheck) addChecklistItem(addSecondCheck);
+    if (addThirdCheck) addChecklistItem(addThirdCheck);
 }
 
 
@@ -151,6 +200,9 @@ function checklistItemTick(tick, element, index) {
                 break;
             case ITEM_AGR_SCRIPT:
                 noteContent.value = noteContent.value.replaceAll("MUST READ AGR SCRIPT", "read script");
+                break;
+            case ITEM_QUOTE_VALID:
+                noteContent.value = noteContent.value.replaceAll("MUST ADV 30 DAYS", "adv valid 30 days unless claiming");
                 break;
             default:
                 break;

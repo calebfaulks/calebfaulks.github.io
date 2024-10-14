@@ -15,19 +15,30 @@
 		<script src="js/script.js"></script>
 	</head>
 	<body>
+		<div class="collapsible-container">
+			<h3>Schedule</h3>
+			<div class="collapsible-inner">
+				<button class="plus-button" onclick="addScheduleItem(this);">+</button>
+			</div>
+		</div>
+		<br><br>
 		<div class="button-group">
-			<button onclick="genericButtonEvent(this, 'Updated email, MUST READ EMAIL SCRIPT', ITEM_EMAIL_SCRIPT)">Email</button>
-			<button onclick="genericButtonEvent(this, 'Updated dd, MUST READ DD SCRIPT', ITEM_DD_SCRIPT)">DD</button>
+			<button onclick="genericButtonEvent(this, 'Updated email, MUST READ EMAIL SCRIPT', ITEM_EMAIL_SCRIPT)">Update Email</button>
+			<button onclick="genericButtonEvent(this, 'Updated dd, MUST READ DD SCRIPT', ITEM_DD_SCRIPT)">Update DD</button>
 			<button onclick="genericButtonEvent(this, 'Applied AGR, MUST READ AGR SCRIPT', ITEM_AGR_SCRIPT)">AGR</button>
-			<button onclick="genericButtonEvent(this, 'Walked through uploading tc via nibby')">TC</button>
+			<button onclick="genericButtonEvent(this, 'Walked through uploading tc via nibby')">TC Upload</button>
+			<button onclick="genericButtonEvent(this, 'Requesting TC, sent to member')">TC Req</button>
 			<button onclick="genericButtonEvent(this, 'Hosp enquiry - transferred to hospital')">Hosp</button>
 			<button onclick="genericButtonEvent(this, 'Hosp claim enquiry - transferred to priority')">Prio</button>
 			<button onclick="genericButtonEvent(this, 'Cancellation (reason) - transferred to retention')">Retention</button>
-			<button onclick="genericButtonEvent(this, 'Quoted product, MUST ADV 30 DAYS')">Quote</button>
+			<button onclick="genericButtonEvent(this, 'Quoted product, MUST ADV 30 DAYS', ITEM_QUOTE_VALID)">Quote</button>
 			<button onclick="genericButtonEvent(this, 'Saved ancil check')">Ancil</button>
 			<button onclick="genericButtonEvent(this, 'Walked through claiming online')">Digi Claim</button>
 			<button onclick="genericButtonEvent(this, 'Took one-time payment')">1T Payment</button>
-			<!-- ADD:   -->
+			<button onclick="genericButtonEvent(this, 'Added spouse auth')">Spouse Auth</button>
+			<button onclick="genericButtonEvent(this, 'OB', ITEM_RECORDED)">OB</button>
+			<button onclick="genericButtonEvent(this, 'Cover enquiry', ITEM_COVER_REVIEW)">Cover Enq</button>
+			<!-- ADD:  -->
 		</div>
 		<div class="member-info">
 			<input id="member-name" type="text" placeholder="Name">
