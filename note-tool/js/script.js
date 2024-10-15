@@ -15,6 +15,8 @@ const ITEM_QUOTE_VALID = 10;
 const ITEM_RECORDED = 11;
 const ITEM_COVER_REVIEW = 12;
 
+let db = null;
+
 let scheduleItems = [];
 
 let checklistItems = [];
@@ -35,7 +37,7 @@ let currentCall;
 
 let callsArchive = [];
 
-let memberName, idCheck, noteContent, extraNotes, checklist, clearButton, copySaveButton, notesArchive;
+let memberName, idCheck, noteContent, extraNotes, checklist, clearButton, copySaveButton, notesArchive, scheduleSection, schedulePlusButton;
 
 function initScript() {
     timeStart = new Date();
@@ -52,12 +54,16 @@ function initScript() {
     clearButton = document.getElementById("clear-button");
     copySaveButton = document.getElementById("copy-save-button");
     notesArchive = document.getElementById("notes-archive");
+    scheduleSection = document.getElementById("schedule-section");
+    schedulePlusButton = document.getElementById("schedule-plus-button");
 
     clearButton.addEventListener("click", clearCall, false);
     copySaveButton.addEventListener("click", copySaveButton_click, false);
 
     resetCurrentCall();
     resetChecklist();
+
+    initDB();
 }
 
 function clearCall(event) {
@@ -146,13 +152,24 @@ function addCallToArchive(call) {
 function addScheduleItem(element) {
     element.outerHTML = `
     <div class="schedule-item">
-        <button class="minus-button" onclick="removeScheduleItem(this)">-</button><input type="time" class="time-picker" value="12:00" onchange="updateScheduleOrder(this)"><input type="text" value="New Item">
+        <button class="minus-button" onclick="removeScheduleItem(this)">-</button><input type="time" class="time-picker" value="12:00" onchange="updateScheduleOrder(this)"><input class="schedule-item-name"  type="text" value="New Item">
     </div>
     ${element.outerHTML}`;
+    schedulePlusButton = document.getElementById("schedule-plus-button");
+}
+
+function loadScheduleItem(item) {
+    schedulePlusButton.outerHTML = `
+    <div class="schedule-item">
+        <button class="minus-button" onclick="removeScheduleItem(this)">-</button><input type="time" class="time-picker" value="${item.time}" onchange="updateScheduleOrder(this)"><input class="schedule-item-name" type="text" value="${item.name}">
+    </div>
+    ${schedulePlusButton.outerHTML}`;
+    schedulePlusButton = document.getElementById("schedule-plus-button");
 }
 
 function removeScheduleItem(element) {
     element.parentElement.outerHTML = "";
+    updateScheduleInDB(true);
 }
 
 function updateScheduleOrder(element) {
@@ -166,11 +183,13 @@ function updateScheduleOrder(element) {
         let iTime = new Date(new Date().toString().slice(0, 16) + scheduleElements[i].querySelector(".time-picker").value);
         if (iTime.valueOf() >= itemTime.valueOf()) {
             parentContainer.insertBefore(tempScheduleItem, scheduleElements[i]);
+            updateScheduleInDB();
             return;
         }
     }
 
     parentContainer.insertBefore(tempScheduleItem, parentContainer.querySelector(".plus-button"));
+    updateScheduleInDB();
 }
 
 
@@ -213,4 +232,83 @@ function checklistItemTick(tick, element, index) {
     else currentCall.callStats[index] = STAT_IGNORED;
     
     element.parentElement.outerHTML = "";
+}
+
+
+
+// Database functions
+
+function initDB() {
+	const dbName = "note_tool";
+	const dbVersion = "1";
+
+	const request = indexedDB.open(dbName, dbVersion);
+
+	// on upgrade needed - runs when the db updates (you access it with a newer version than is stored)
+	request.onupgradeneeded = e => {
+		db = e.target.result;
+		console.log("upgrade is called");
+		console.log(db);
+
+		// create an object store (kind of like an array in the db) with a key (like an identifier - unique for each item)
+		// object stores can only be created during an upgrade (version change)
+		//const coreData = db.createObjectStore("core_data", { keyPath: "title" });
+		const scheduleInfo = db.createObjectStore("schedule_info");
+		//const otherData = db.createObjectStore("other_data", { keyPath: "title" });
+	};
+
+	// on success - runs when you successfully access the database
+	request.onsuccess = e => {
+		db = e.target.result;
+		//console.log("database accessed successfully");
+		loadDataFromDB();
+	};
+
+	// on error
+	request.onerror = e => {
+		console.log("DATABASE ERROR: " + e.target.error.message);
+	};
+}
+
+// Pulls the schedule stored in the database and loads it into an array
+function loadDataFromDB() {
+	const tx = db.transaction("schedule_info", "readonly");
+	const scheduleInfo = tx.objectStore("schedule_info");
+	const request = scheduleInfo.openCursor();
+	request.onerror = e => console.log(`DATABASE ERROR: ${e.target.error.message}`);
+	request.onsuccess = e => {
+		const cursor = e.target.result;
+
+		if (cursor) {
+			// Process the data here
+
+			scheduleItems[cursor.key] = cursor.value;
+            loadScheduleItem(cursor.value);
+
+			cursor.continue(); // moves the cursor forward, calling onsuccess again
+		}
+		else {
+			//resetTimeSidebar();
+			//resetTimeCategoryButtons();
+        }
+	};
+}
+
+// Update the schedule in the DB to match the array
+function updateScheduleInDB(clearDB) {
+	const tx = db.transaction("schedule_info", "readwrite");
+	tx.onerror = e => console.log(`DATABASE ERROR: ${e.target.error.message}`);
+	//tx.oncomplete = e => console.log(e);
+	const scheduleInfo = tx.objectStore("schedule_info");
+
+    if (clearDB) scheduleInfo.clear();
+
+    scheduleItems = [];
+    let scheduleItemElements = scheduleSection.querySelectorAll(".schedule-item");
+	for (let i = 0; i < scheduleItemElements.length; i++) {
+        let itemTime = scheduleItemElements[i].querySelector(".time-picker").value;
+        let itemName = scheduleItemElements[i].querySelector(".schedule-item-name").value;
+        scheduleItems[i] = {time: itemTime, name: itemName};
+		const request = scheduleInfo.put(scheduleItems[i], i);
+	}
 }
