@@ -14,6 +14,13 @@ const ITEM_AGR_SCRIPT = 9;
 const ITEM_QUOTE_VALID = 10;
 const ITEM_RECORDED = 11;
 const ITEM_COVER_REVIEW = 12;
+const ITEM_CSS_TURNAROUND = 13;
+const ITEM_CRT_TURNAROUND = 14;
+const ITEM_CHANGE_SCRIPT = 15;
+const ITEM_CHANGE_ADV_WAITS = 16;
+const ITEM_CHANGE_ADV_PAYMENTS = 17;
+const ITEM_CARD_DELIVERY = 18;
+const ITEM_PROMOTE_DIGITAL_CARD = 19;
 
 let db = null;
 
@@ -31,7 +38,14 @@ checklistItems[ITEM_EMAIL_SCRIPT] = {text: "Email script"};
 checklistItems[ITEM_AGR_SCRIPT] = {text: "AGR script"};
 checklistItems[ITEM_QUOTE_VALID] = {text: "Quote validity"};
 checklistItems[ITEM_RECORDED] = {text: "Call recorded disclaimer"};
-checklistItems[ITEM_COVER_REVIEW] = {text: "Cover Review"};
+checklistItems[ITEM_COVER_REVIEW] = {text: "Cover review"};
+checklistItems[ITEM_CSS_TURNAROUND] = {text: "CSS turnaround"};
+checklistItems[ITEM_CRT_TURNAROUND] = {text: "CRT turnaround"};
+checklistItems[ITEM_CHANGE_SCRIPT] = {text: "Cover change script"};
+checklistItems[ITEM_CHANGE_ADV_WAITS] = {text: "Cover change wait periods"};
+checklistItems[ITEM_CHANGE_ADV_PAYMENTS] = {text: "Cover change upcoming payments"};
+checklistItems[ITEM_CARD_DELIVERY] = {text: "Card delivery time"};
+checklistItems[ITEM_PROMOTE_DIGITAL_CARD] = {text: "Promote digital card"};
 
 let currentCall;
 
@@ -141,6 +155,7 @@ function removeChecklistItem(item) {
 
 function addCallToArchive(call) {
     callsArchive.push(call);
+    document.querySelector(".notes-archive-heading").innerText = `${callsArchive.length} Calls`;
     notesArchive.innerHTML = `
     <p class="archived-note">${call.callMemberName} - 
     ${idCheck.children[call.callID].innerText}<br>
@@ -152,7 +167,7 @@ function addCallToArchive(call) {
 function addScheduleItem(element) {
     element.outerHTML = `
     <div class="schedule-item">
-        <button class="minus-button" onclick="removeScheduleItem(this)">-</button><input type="time" class="time-picker" value="12:00" onchange="updateScheduleOrder(this)"><input class="schedule-item-name"  type="text" value="New Item">
+        <button class="minus-button" onclick="removeScheduleItem(this)">-</button><input type="time" class="time-picker" value="12:00" onchange="updateScheduleOrder(this)"><input class="schedule-item-name"  type="text" value="New Item" onchange="updateScheduleInDB()">
     </div>
     ${element.outerHTML}`;
     schedulePlusButton = document.getElementById("schedule-plus-button");
@@ -161,7 +176,7 @@ function addScheduleItem(element) {
 function loadScheduleItem(item) {
     schedulePlusButton.outerHTML = `
     <div class="schedule-item">
-        <button class="minus-button" onclick="removeScheduleItem(this)">-</button><input type="time" class="time-picker" value="${item.time}" onchange="updateScheduleOrder(this)"><input class="schedule-item-name" type="text" value="${item.name}">
+        <button class="minus-button" onclick="removeScheduleItem(this)">-</button><input type="time" class="time-picker" value="${item.time}" onchange="updateScheduleOrder(this)"><input class="schedule-item-name" type="text" value="${item.name}" onchange="updateScheduleInDB()">
     </div>
     ${schedulePlusButton.outerHTML}`;
     schedulePlusButton = document.getElementById("schedule-plus-button");
@@ -223,6 +238,7 @@ function checklistItemTick(tick, element, index) {
             case ITEM_QUOTE_VALID:
                 noteContent.value = noteContent.value.replaceAll("MUST ADV 30 DAYS", "adv valid 30 days unless claiming");
                 break;
+            // Add remaining check buttons
             default:
                 break;
         }

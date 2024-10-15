@@ -38,7 +38,13 @@
 			<button onclick="genericButtonEvent(this, 'Added spouse auth')">Spouse Auth</button>
 			<button onclick="genericButtonEvent(this, 'OB', ITEM_RECORDED)">OB</button>
 			<button onclick="genericButtonEvent(this, 'Cover enquiry', ITEM_COVER_REVIEW)">Cover Enq</button>
-			<!-- ADD:  -->
+			<button onclick="genericButtonEvent(this, 'Logged with CSS, MUST ADV CSS TURNAROUND', ITEM_CSS_TURNAROUND)">Log CSS</button>
+			<button onclick="genericButtonEvent(this, 'Logged with CRT, MUST ADV CRT TURNAROUND', ITEM_CRT_TURNAROUND)">Log CRT</button>
+			<button onclick="genericButtonEvent(this, 'Changed cover, MUST READ CHANGE SCRIPT, MUST ADV WAITS, MUST ADV UPCOMING PAYMENTS', ITEM_CHANGE_SCRIPT, ITEM_CHANGE_ADV_WAITS, ITEM_CHANGE_ADV_PAYMENTS)">Cover Change</button>
+			<button onclick="genericButtonEvent(this, 'Sent new cards, MUST ADV DELIVERY, MUST PROMOTE DIGITAL CARD', ITEM_CARD_DELIVERY, ITEM_PROMOTE_DIGITAL_CARD)">New Cards</button>
+			<button onclick="genericButtonEvent(this, 'Walked through using digital card')">Digi Card</button>
+			<button onclick="genericButtonEvent(this, 'Walked through logging in to account')">Login</button>
+			<!-- ADD: Log CSS, log CRT, change cover (read script, adv waits/upcoming payments), new cards, digital card, login walkthough -->
 		</div>
 		<div class="member-info">
 			<input id="member-name" type="text" placeholder="Name">
@@ -56,6 +62,7 @@
 		</div>
 		<div id="checklist"></div>
 		<textarea id="extra-notes" class="notes-box" placeholder="Extra notes"></textarea>
+		<h3 class="notes-archive-heading">0 Calls</h3>
 		<div id="notes-archive"></div>
 		<script>
 			initScript();
