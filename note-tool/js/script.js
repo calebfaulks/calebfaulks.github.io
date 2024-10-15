@@ -94,9 +94,15 @@ function clearCall(event) {
 
 function copySaveButton_click(event) {
     if (memberName.value == "" && idCheck.selectedIndex == 0 && noteContent.value == "") return;
+
+    // Replace useless values with more useful ones
+    if (memberName.value == "") memberName.value = "Unknown caller";
+    let idText = ` - ${idCheck.children[idCheck.selectedIndex].innerText}`;
+    if (!idText.includes("full ID")) idText = "";
+    filterNoteContent();
     
     // Turn the member name, ID and notes into a single string, then copy it to the clipboard
-    let finalNote = `${memberName.value} - ${idCheck.children[idCheck.selectedIndex].innerText}\n${noteContent.value}`;
+    let finalNote = `${memberName.value}${idText}\n${noteContent.value}`;
     navigator.clipboard.writeText(finalNote);
 
     // Store the call information in the archive
@@ -116,6 +122,20 @@ function resetCurrentCall() {
         callID: 0,
         callNotes: ""
     };
+}
+
+function filterNoteContent() {
+    noteContent.value = noteContent.value.replaceAll(", MUST READ DD SCRIPT", "")
+    .replaceAll(", MUST READ EMAIL SCRIPT", "")
+    .replaceAll(", MUST READ AGR SCRIPT", "")
+    .replaceAll(", MUST ADV 30 DAYS", "")
+    .replaceAll(", MUST ADV CSS TURNAROUND", "")
+    .replaceAll(", MUST ADV CRT TURNAROUND", "")
+    .replaceAll(", MUST READ CHANGE SCRIPT", "")
+    .replaceAll(", MUST ADV WAITS", "")
+    .replaceAll(", MUST ADV UPCOMING PAYMENTS", "")
+    .replaceAll(", MUST ADV DELIVERY", "")
+    .replaceAll(", MUST PROMOTE DIGITAL CARD", "");
 }
 
 function resetChecklist() {
@@ -156,9 +176,10 @@ function removeChecklistItem(item) {
 function addCallToArchive(call) {
     callsArchive.push(call);
     document.querySelector(".notes-archive-heading").innerText = `${callsArchive.length} Calls`;
+    let idText = ` - ${idCheck.children[call.callID].innerText}`;
+    if (!idText.includes("full ID")) idText = "";
     notesArchive.innerHTML = `
-    <p class="archived-note">${call.callMemberName} - 
-    ${idCheck.children[call.callID].innerText}<br>
+    <p class="archived-note">${call.callMemberName}${idText}<br>
     ${call.callNotes}</p>
     ${notesArchive.innerHTML}`
 }
@@ -210,7 +231,15 @@ function updateScheduleOrder(element) {
 
 function genericButtonEvent(element, addText, addCheck, addSecondCheck, addThirdCheck) {
     if (noteContent.value != "") noteContent.value += "\n"
-    noteContent.value += addText;
+    let addStart = noteContent.value.length;
+    noteContent.value += addText.replaceAll("|", "");
+    if (addText.includes("|")) {
+        let firstChar = addText.indexOf("|")
+        noteContent.selectionStart = addStart + firstChar;
+        noteContent.selectionEnd = addStart + addText.indexOf("|", firstChar + 1) - 1;
+    }
+    noteContent.value = noteContent.value.replaceAll(", digital card\nWalked through using digital card", "\nWalked through using digital card");
+    noteContent.focus();
     if (addCheck) addChecklistItem(addCheck);
     if (addSecondCheck) addChecklistItem(addSecondCheck);
     if (addThirdCheck) addChecklistItem(addThirdCheck);
@@ -238,7 +267,34 @@ function checklistItemTick(tick, element, index) {
             case ITEM_QUOTE_VALID:
                 noteContent.value = noteContent.value.replaceAll("MUST ADV 30 DAYS", "adv valid 30 days unless claiming");
                 break;
-            // Add remaining check buttons
+            case ITEM_COVER_REVIEW:
+                if (!noteContent.value.toLowerCase().includes("cover review")) noteContent.value += "\nCover review";
+                break;
+            case ITEM_CSS_TURNAROUND:
+                noteContent.value = noteContent.value.replaceAll("MUST ADV CSS TURNAROUND", "adv next working day call back");
+                break;
+            case ITEM_CRT_TURNAROUND:
+                noteContent.value = noteContent.value.replaceAll("MUST ADV CRT TURNAROUND", "adv turnaround");
+                break;
+            case ITEM_CHANGE_SCRIPT:
+                noteContent.value = noteContent.value.replaceAll("MUST READ CHANGE SCRIPT", "read script");
+                break;
+            case ITEM_CHANGE_ADV_WAITS:
+                noteContent.value = noteContent.value.replaceAll("MUST ADV WAITS", "adv waits");
+                noteContent.value = noteContent.value.replaceAll("adv waits, adv upcoming payments", "adv waits & upcoming payments");
+                break;
+            case ITEM_CHANGE_ADV_PAYMENTS:
+                noteContent.value = noteContent.value.replaceAll("MUST ADV UPCOMING PAYMENTS", "adv upcoming payments");
+                noteContent.value = noteContent.value.replaceAll("adv waits, adv upcoming payments", "adv waits & upcoming payments");
+                break;
+            case ITEM_CARD_DELIVERY:
+                noteContent.value = noteContent.value.replaceAll("MUST ADV DELIVERY", "adv 7-14 days delivery");
+                noteContent.value = noteContent.value.replaceAll("adv 7-14 days delivery, promoted digital card", "adv 7-14 days delivery, digital card");
+                break;
+            case ITEM_PROMOTE_DIGITAL_CARD:
+                noteContent.value = noteContent.value.replaceAll("MUST PROMOTE DIGITAL CARD", "promoted digital card");
+                noteContent.value = noteContent.value.replaceAll("adv 7-14 days delivery, promoted digital card", "adv 7-14 days delivery, digital card");
+                break;
             default:
                 break;
         }
