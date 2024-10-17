@@ -85,3 +85,41 @@ body {
 .collapsible-container {
 	width: 100%;
 }
+
+#schedule-section {
+	margin-bottom: 20px;
+}
+
+.tabs-headings {
+	width: 100%;
+	display: flex;
+	flex-direction: row;
+}
+
+.tabs-headings button {
+	flex-grow: 1;
+}
+
+.tabs-container {
+	width: 100%;
+}
+
+.tab-content {
+	display: none;
+	width: 100%;
+}
+
+.tab-content.tab-active {
+	display: block;
+}
+
+table {
+	width: 100%;
+}
+
+td, th {
+	text-align: center;
+}
+td:first-of-type, th:first-of-type {
+	text-align: left;
+}

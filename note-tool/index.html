@@ -15,13 +15,34 @@
 		<script src="js/script.js"></script>
 	</head>
 	<body>
-		<div id="schedule-section" class="collapsible-container">
-			<h3>Schedule</h3>
-			<div class="collapsible-inner">
+		<div class="tabs-headings">
+			<button class="tab-button tab-active">Schedule</button>
+			<button class="tab-button">Stats</button>
+			<button class="tab-button">My Notes</button>
+		</div>
+		<div class="tabs-container">
+			<div id="schedule-section" class="tab-content tab-active">
 				<button id="schedule-plus-button" class="plus-button" onclick="addScheduleItem(this);">+</button>
 			</div>
+			<div class="tab-content">
+				<table>
+					<thead>
+						<tr>
+							<th>Stat</th>
+							<th>Completed</th>
+							<th>Missed</th>
+							<th>Ignored</th>
+							<th>Quality</th>
+						</tr>
+					</thead>
+					<tbody id="stats-table">
+					</tbody>
+				</table>
+			</div>
+			<div class="tab-content">
+				<textarea id="my-notes" class="notes-box" placeholder="My notes"></textarea>
+			</div>
 		</div>
-		<br><br>
 		<div class="button-group">
 			<button onclick="genericButtonEvent(this, 'Updated email, MUST READ EMAIL SCRIPT', ITEM_EMAIL_SCRIPT)">Update Email</button>
 			<button onclick="genericButtonEvent(this, 'Updated dd, MUST READ DD SCRIPT', ITEM_DD_SCRIPT)">Update DD</button>
@@ -44,8 +65,12 @@
 			<button onclick="genericButtonEvent(this, 'Sent new card|s|, MUST ADV DELIVERY, MUST PROMOTE DIGITAL CARD', ITEM_CARD_DELIVERY, ITEM_PROMOTE_DIGITAL_CARD)">New Cards</button>
 			<button onclick="genericButtonEvent(this, 'Walked through using digital card')">Digi Card</button>
 			<button onclick="genericButtonEvent(this, 'Walked through logging in to account')">Login</button>
-			<button onclick="genericButtonEvent(this, 'Added |dependants| to policy')">Add Dep</button>
-			<!-- ADD: Log CSS, log CRT, change cover (read script, adv waits/upcoming payments), new cards, digital card, login walkthough -->
+			<button onclick="genericButtonEvent(this, 'Added |dependants| to policy')">Dep +</button>
+			<button onclick="genericButtonEvent(this, 'Removed |dependants| from policy')">Dep -</button>
+			<button onclick="genericButtonEvent(this, 'Suspend (|type, duration|)\nMUST CHECK ELIGIBLE, MUST ADV IMPACTS', ITEM_SUSPENSION_ELIGIBILITY, ITEM_SUSPENSION_IMPACTS)">Suspend</button>
+			<button onclick="genericButtonEvent(this, 'Attempted CB, no response, MUST RESET CALLBACK/LEAVE MESSAGE', ITEM_CB_CALLBACK, ITEM_CB_MESSAGE)">CB Fail</button>
+			<button onclick="genericButtonEvent(this, 'Requesting tax statement for |self|\nMUST ADV PRE-FILLED, MUST OFFER SELF-SERVICE', ITEM_TAX_PREFILLED, ITEM_TAX_SELF)">Tax</button>
+			<!-- Add:  -->
 		</div>
 		<div class="member-info">
 			<input id="member-name" type="text" placeholder="Name">

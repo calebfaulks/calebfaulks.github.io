@@ -1,26 +1,34 @@
-const STAT_MISSED = 1;
-const STAT_IGNORED = 2;
-const STAT_COMPLETED = 3;
+const STAT_MISSED       = 1;
+const STAT_IGNORED      = 2;
+const STAT_COMPLETED    = 3;
 
-const ITEM_ID = 1;
-const ITEM_AGENDA = 2;
-const ITEM_TIMEFRAME = 3;
-const ITEM_UPDATE_DETAILS = 4;
-const ITEM_DIGITAL_WALKTHROUGH = 5;
-const ITEM_RECAP = 6;
-const ITEM_DD_SCRIPT = 7;
-const ITEM_EMAIL_SCRIPT = 8;
-const ITEM_AGR_SCRIPT = 9;
-const ITEM_QUOTE_VALID = 10;
-const ITEM_RECORDED = 11;
-const ITEM_COVER_REVIEW = 12;
-const ITEM_CSS_TURNAROUND = 13;
-const ITEM_CRT_TURNAROUND = 14;
-const ITEM_CHANGE_SCRIPT = 15;
-const ITEM_CHANGE_ADV_WAITS = 16;
-const ITEM_CHANGE_ADV_PAYMENTS = 17;
-const ITEM_CARD_DELIVERY = 18;
-const ITEM_PROMOTE_DIGITAL_CARD = 19;
+const ITEM_ID                       = 1; // Unused
+const ITEM_AGENDA                   = 2;
+const ITEM_TIMEFRAME                = 3;
+const ITEM_UPDATE_DETAILS           = 4;
+const ITEM_DIGITAL_WALKTHROUGH      = 5;
+const ITEM_RECAP                    = 6;
+const ITEM_DD_SCRIPT                = 7;
+const ITEM_EMAIL_SCRIPT             = 8;
+const ITEM_AGR_SCRIPT               = 9;
+const ITEM_QUOTE_VALID              = 10;
+const ITEM_RECORDED                 = 11;
+const ITEM_COVER_REVIEW             = 12;
+const ITEM_CSS_TURNAROUND           = 13;
+const ITEM_CRT_TURNAROUND           = 14;
+const ITEM_CHANGE_SCRIPT            = 15;
+const ITEM_CHANGE_ADV_WAITS         = 16;
+const ITEM_CHANGE_ADV_PAYMENTS      = 17;
+const ITEM_CARD_DELIVERY            = 18;
+const ITEM_PROMOTE_DIGITAL_CARD     = 19;
+const ITEM_SUSPENSION_ELIGIBILITY   = 20;
+const ITEM_SUSPENSION_IMPACTS       = 21;
+const ITEM_CB_CALLBACK              = 22;
+const ITEM_CB_MESSAGE               = 23;
+const ITEM_TAX_PREFILLED            = 24;
+const ITEM_TAX_SELF                 = 25;
+
+const ITEMS_END                     = 26;
 
 let db = null;
 
@@ -33,25 +41,37 @@ checklistItems[ITEM_TIMEFRAME] = {text: "Timeframe"};
 checklistItems[ITEM_UPDATE_DETAILS] = {text: "Check/update contact details"};
 checklistItems[ITEM_DIGITAL_WALKTHROUGH] = {text: "Offer digital walkthrough"};
 checklistItems[ITEM_RECAP] = {text: "Strong recap"};
-checklistItems[ITEM_DD_SCRIPT] = {text: "DD script"};
-checklistItems[ITEM_EMAIL_SCRIPT] = {text: "Email script"};
-checklistItems[ITEM_AGR_SCRIPT] = {text: "AGR script"};
-checklistItems[ITEM_QUOTE_VALID] = {text: "Quote validity"};
-checklistItems[ITEM_RECORDED] = {text: "Call recorded disclaimer"};
+checklistItems[ITEM_DD_SCRIPT] = {text: "DD script", required: true};
+checklistItems[ITEM_EMAIL_SCRIPT] = {text: "Email script", required: true};
+checklistItems[ITEM_AGR_SCRIPT] = {text: "AGR script", required: true};
+checklistItems[ITEM_QUOTE_VALID] = {text: "Quote validity", required: true};
+checklistItems[ITEM_RECORDED] = {text: "Call recorded disclaimer", required: true};
 checklistItems[ITEM_COVER_REVIEW] = {text: "Cover review"};
-checklistItems[ITEM_CSS_TURNAROUND] = {text: "CSS turnaround"};
-checklistItems[ITEM_CRT_TURNAROUND] = {text: "CRT turnaround"};
-checklistItems[ITEM_CHANGE_SCRIPT] = {text: "Cover change script"};
-checklistItems[ITEM_CHANGE_ADV_WAITS] = {text: "Cover change wait periods"};
-checklistItems[ITEM_CHANGE_ADV_PAYMENTS] = {text: "Cover change upcoming payments"};
-checklistItems[ITEM_CARD_DELIVERY] = {text: "Card delivery time"};
+checklistItems[ITEM_CSS_TURNAROUND] = {text: "CSS turnaround", required: true};
+checklistItems[ITEM_CRT_TURNAROUND] = {text: "CRT turnaround", required: true};
+checklistItems[ITEM_CHANGE_SCRIPT] = {text: "Cover change script", required: true};
+checklistItems[ITEM_CHANGE_ADV_WAITS] = {text: "Cover change wait periods", required: true};
+checklistItems[ITEM_CHANGE_ADV_PAYMENTS] = {text: "Cover change upcoming payments", required: true};
+checklistItems[ITEM_CARD_DELIVERY] = {text: "Card delivery time", required: true};
 checklistItems[ITEM_PROMOTE_DIGITAL_CARD] = {text: "Promote digital card"};
+checklistItems[ITEM_SUSPENSION_ELIGIBILITY] = {text: "Suspension eligibility", required: true};
+checklistItems[ITEM_SUSPENSION_IMPACTS] = {text: "Suspension impacts", required: true};
+checklistItems[ITEM_CB_CALLBACK] = {text: "CB set callback"};
+checklistItems[ITEM_CB_MESSAGE] = {text: "CB leave message"};
+checklistItems[ITEM_TAX_PREFILLED] = {text: "Tax pre-filled", required: true};
+checklistItems[ITEM_TAX_SELF] = {text: "Tax statement self-service", required: true};
+
+let statsCompleted = [];
+let statsMissed = [];
+let statsIgnored = [];
 
 let currentCall;
 
 let callsArchive = [];
 
-let memberName, idCheck, noteContent, extraNotes, checklist, clearButton, copySaveButton, notesArchive, scheduleSection, schedulePlusButton;
+let updateMyNotes = false;
+
+let memberName, idCheck, noteContent, extraNotes, checklist, clearButton, copySaveButton, notesArchive, scheduleSection, schedulePlusButton, statsTable, myNotes;
 
 function initScript() {
     timeStart = new Date();
@@ -70,9 +90,17 @@ function initScript() {
     notesArchive = document.getElementById("notes-archive");
     scheduleSection = document.getElementById("schedule-section");
     schedulePlusButton = document.getElementById("schedule-plus-button");
+    statsTable = document.getElementById("stats-table");
+    myNotes = document.getElementById("my-notes");
+    let tabButtons = document.querySelectorAll(".tab-button");
 
+    myNotes.addEventListener("change", myNotes_change, false);
     clearButton.addEventListener("click", clearCall, false);
     copySaveButton.addEventListener("click", copySaveButton_click, false);
+
+    for (let i = 0; i < tabButtons.length; i++) {
+        tabButtons[i].addEventListener("click", tabButton_click, false);
+    }
 
     resetCurrentCall();
     resetChecklist();
@@ -135,7 +163,12 @@ function filterNoteContent() {
     .replaceAll(", MUST ADV WAITS", "")
     .replaceAll(", MUST ADV UPCOMING PAYMENTS", "")
     .replaceAll(", MUST ADV DELIVERY", "")
-    .replaceAll(", MUST PROMOTE DIGITAL CARD", "");
+    .replaceAll(", MUST PROMOTE DIGITAL CARD", "")
+    .replaceAll("\nMUST CHECK ELIGIBLE", "")
+    .replaceAll(", MUST ADV IMPACTS", "")
+    .replaceAll(", MUST RESET CALLBACK/LEAVE MESSAGE", "")
+    .replaceAll("\nMUST ADV PRE-FILLED", "")
+    .replaceAll(", MUST OFFER SELF-SERVICE", "");
 }
 
 function resetChecklist() {
@@ -161,13 +194,14 @@ function addChecklistItem(item) {
     </div>`;
 }
 
-function removeChecklistItem(item) {
+function removeChecklistItem(item, complete) {
     let checklistChildren = checklist.children;
 
     for (let i = checklistChildren.length - 1; i >= 0; i--) {
         if (checklistChildren[i].querySelector("span").innerText == checklistItems[item].text) {
             checklist.removeChild(checklistChildren[i]);
-            currentCall.callStats[item] = undefined;
+            if (complete) currentCall.callStats[item] = STAT_COMPLETED;
+            else currentCall.callStats[item] = undefined;
             break;
         }
     }
@@ -182,6 +216,50 @@ function addCallToArchive(call) {
     <p class="archived-note">${call.callMemberName}${idText}<br>
     ${call.callNotes}</p>
     ${notesArchive.innerHTML}`
+    addCallToStats(call);
+}
+
+function addCallToStats(call) {
+    for (let i = 0; i < ITEMS_END; i++) {
+        switch (call.callStats[i]) {
+            case STAT_COMPLETED:
+                if (!statsCompleted[i]) statsCompleted[i] = 0;
+                statsCompleted[i]++;
+                break;
+            case STAT_MISSED:
+                if (!statsMissed[i]) statsMissed[i] = 0;
+                statsMissed[i]++;
+                break;
+            case STAT_IGNORED:
+                if (!statsIgnored[i]) statsIgnored[i] = 0;
+                statsIgnored[i]++;
+                break;
+            default:
+                break;
+        }
+    }
+
+    updateStatsTable();
+}
+
+function updateStatsTable() {
+    statsTable.innerHTML = "";
+
+    for (let i = 0; i < ITEMS_END; i++) {
+        if (statsCompleted[i] || statsMissed[i] || statsIgnored[i]) {
+            if (!statsCompleted[i]) statsCompleted[i] = 0;
+            if (!statsMissed[i]) statsMissed[i] = 0;
+            if (!statsIgnored[i]) statsIgnored[i] = 0;
+            statsTable.innerHTML += `
+            <tr>
+                <td>${checklistItems[i].text}</td>
+                <td>${statsCompleted[i]}</td>
+                <td>${statsMissed[i]}</td>
+                <td>${statsIgnored[i]}</td>
+                <td>${statsCompleted[i] / (statsCompleted[i] + statsMissed[i]) * 100}%</td>
+            </tr>`;
+        }
+    }
 }
 
 
@@ -211,21 +289,36 @@ function removeScheduleItem(element) {
 function updateScheduleOrder(element) {
     let itemTime = new Date(new Date().toString().slice(0, 16) + element.value);
     let tempScheduleItem = element.parentElement.cloneNode(true);
-    let parentContainer = element.closest(".collapsible-inner");
-    parentContainer.removeChild(element.parentElement);
-    let scheduleElements = parentContainer.children;
+    scheduleSection.removeChild(element.parentElement);
+    let scheduleElements = scheduleSection.children;
 
     for (let i = 0; i < scheduleElements.length - 1; i++) {
         let iTime = new Date(new Date().toString().slice(0, 16) + scheduleElements[i].querySelector(".time-picker").value);
         if (iTime.valueOf() >= itemTime.valueOf()) {
-            parentContainer.insertBefore(tempScheduleItem, scheduleElements[i]);
+            scheduleSection.insertBefore(tempScheduleItem, scheduleElements[i]);
             updateScheduleInDB();
             return;
         }
     }
 
-    parentContainer.insertBefore(tempScheduleItem, parentContainer.querySelector(".plus-button"));
+    scheduleSection.insertBefore(tempScheduleItem, scheduleSection.querySelector(".plus-button"));
     updateScheduleInDB();
+}
+
+function tabButton_click(event) {
+    let element = event.target;
+    let tabsHeadings = element.closest(".tabs-headings");
+    let tabsContainer = tabsHeadings.nextElementSibling;
+
+    tabsHeadings.querySelector(".tab-active").classList.remove("tab-active");
+    tabsContainer.querySelector(".tab-active").classList.remove("tab-active");
+
+    for (let i = 0; i < tabsHeadings.children.length; i++) {
+        if (tabsHeadings.children[i] === element) {
+            element.classList.add("tab-active");
+            tabsContainer.children[i].classList.add("tab-active");
+        }
+    }
 }
 
 
@@ -243,6 +336,13 @@ function genericButtonEvent(element, addText, addCheck, addSecondCheck, addThird
     if (addCheck) addChecklistItem(addCheck);
     if (addSecondCheck) addChecklistItem(addSecondCheck);
     if (addThirdCheck) addChecklistItem(addThirdCheck);
+}
+
+
+function myNotes_change(event) {
+    if (updateMyNotes) return;
+    updateMyNotes = true;
+    setTimeout(storeMyNotesToDB, 1000);
 }
 
 
@@ -295,13 +395,43 @@ function checklistItemTick(tick, element, index) {
                 noteContent.value = noteContent.value.replaceAll("MUST PROMOTE DIGITAL CARD", "promoted digital card");
                 noteContent.value = noteContent.value.replaceAll("adv 7-14 days delivery, promoted digital card", "adv 7-14 days delivery, digital card");
                 break;
+            case ITEM_SUSPENSION_ELIGIBILITY:
+                noteContent.value = noteContent.value.replaceAll("MUST CHECK ELIGIBLE", "Confirmed eligible");
+                break;
+            case ITEM_SUSPENSION_IMPACTS:
+                noteContent.value = noteContent.value.replaceAll("MUST ADV IMPACTS", "adv impacts");
+                break;
+            case ITEM_CB_CALLBACK:
+                noteContent.value = noteContent.value.replaceAll("MUST RESET CALLBACK/LEAVE MESSAGE", "set callback");
+                removeChecklistItem(ITEM_CB_MESSAGE);
+                break;
+            case ITEM_CB_MESSAGE:
+                noteContent.value = noteContent.value.replaceAll("MUST RESET CALLBACK/LEAVE MESSAGE", "left message to call us back");
+                removeChecklistItem(ITEM_CB_CALLBACK);
+                break;
+            case ITEM_TAX_PREFILLED:
+                noteContent.value = noteContent.value.replaceAll("MUST ADV PRE-FILLED", "adv pre-filled");
+                break;
+            case ITEM_TAX_SELF:
+                noteContent.value = noteContent.value.replaceAll("MUST OFFER SELF-SERVICE", "walked through downloading statement online");
+                break;
             default:
                 break;
         }
 
         currentCall.callStats[index] = STAT_COMPLETED;
     }
-    else currentCall.callStats[index] = STAT_IGNORED;
+    else {
+        currentCall.callStats[index] = STAT_IGNORED;
+        switch (index) {
+            case ITEM_TAX_SELF:
+                noteContent.value = noteContent.value.replaceAll("MUST OFFER SELF-SERVICE", "member declined self-service\nSent to member");
+                currentCall.callStats[index] = STAT_COMPLETED;
+                break;
+            default:
+                break;
+        }
+    }
     
     element.parentElement.outerHTML = "";
 }
@@ -312,7 +442,7 @@ function checklistItemTick(tick, element, index) {
 
 function initDB() {
 	const dbName = "note_tool";
-	const dbVersion = "1";
+	const dbVersion = "2";
 
 	const request = indexedDB.open(dbName, dbVersion);
 
@@ -325,15 +455,19 @@ function initDB() {
 		// create an object store (kind of like an array in the db) with a key (like an identifier - unique for each item)
 		// object stores can only be created during an upgrade (version change)
 		//const coreData = db.createObjectStore("core_data", { keyPath: "title" });
-		const scheduleInfo = db.createObjectStore("schedule_info");
-		//const otherData = db.createObjectStore("other_data", { keyPath: "title" });
+		try {
+            const scheduleInfo = db.createObjectStore("schedule_info");
+        } catch (error) {} 
+		try {
+            const otherData = db.createObjectStore("other_data");
+        } catch (error) {}
 	};
 
 	// on success - runs when you successfully access the database
 	request.onsuccess = e => {
 		db = e.target.result;
-		//console.log("database accessed successfully");
-		loadDataFromDB();
+		loadScheduleFromDB();
+        loadMyNotesFromDB();
 	};
 
 	// on error
@@ -343,7 +477,7 @@ function initDB() {
 }
 
 // Pulls the schedule stored in the database and loads it into an array
-function loadDataFromDB() {
+function loadScheduleFromDB() {
 	const tx = db.transaction("schedule_info", "readonly");
 	const scheduleInfo = tx.objectStore("schedule_info");
 	const request = scheduleInfo.openCursor();
@@ -360,8 +494,30 @@ function loadDataFromDB() {
 			cursor.continue(); // moves the cursor forward, calling onsuccess again
 		}
 		else {
-			//resetTimeSidebar();
-			//resetTimeCategoryButtons();
+        }
+	};
+}
+
+function loadMyNotesFromDB() {
+	const tx = db.transaction("other_data", "readonly");
+	const otherData = tx.objectStore("other_data");
+	const request = otherData.openCursor();
+	request.onerror = e => console.log(`DATABASE ERROR: ${e.target.error.message}`);
+	request.onsuccess = e => {
+		const cursor = e.target.result;
+
+		if (cursor) {
+			// Process the data here
+
+			if (cursor.key == "my_notes") {
+                updateMyNotes = true;
+                myNotes.value = cursor.value;
+                updateMyNotes = false;
+            }
+
+			cursor.continue(); // moves the cursor forward, calling onsuccess again
+		}
+		else {
         }
 	};
 }
@@ -383,4 +539,13 @@ function updateScheduleInDB(clearDB) {
         scheduleItems[i] = {time: itemTime, name: itemName};
 		const request = scheduleInfo.put(scheduleItems[i], i);
 	}
+}
+
+function storeMyNotesToDB() {
+	updateMyNotes = false;
+
+    const tx = db.transaction("other_data", "readwrite");
+	tx.onerror = e => console.log(`DATABASE ERROR: ${e.target.error.message}`);
+	const otherData = tx.objectStore("other_data");
+	const request = otherData.put(myNotes.value, "my_notes");
 }
