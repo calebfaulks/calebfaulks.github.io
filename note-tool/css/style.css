@@ -96,8 +96,13 @@ body {
 	flex-direction: row;
 }
 
-.tabs-headings button {
+.tab-button {
 	flex-grow: 1;
+	border: 1px solid var( --cf-color-darker );
+	border-radius: 5px 5px 0px 0px;
+}
+.tab-button.tab-active {
+	border-bottom-color: transparent;
 }
 
 .tabs-container {

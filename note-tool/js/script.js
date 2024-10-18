@@ -121,7 +121,13 @@ function clearCall(event) {
 }
 
 function copySaveButton_click(event) {
+    // If there's nothing to copy & save, don't run the function
     if (memberName.value == "" && idCheck.selectedIndex == 0 && noteContent.value == "") return;
+
+    // If shift was held, dismiss everything in the checklist
+    if (event.shiftKey) {
+        dismissChecklist();
+    }
 
     // Replace useless values with more useful ones
     if (memberName.value == "") memberName.value = "Unknown caller";
@@ -250,13 +256,16 @@ function updateStatsTable() {
             if (!statsCompleted[i]) statsCompleted[i] = 0;
             if (!statsMissed[i]) statsMissed[i] = 0;
             if (!statsIgnored[i]) statsIgnored[i] = 0;
+            let quality = statsCompleted[i] / (statsCompleted[i] + statsMissed[i]) * 100;
+            if (!quality) quality = 0;
+            quality = Math.round(quality);
             statsTable.innerHTML += `
             <tr>
                 <td>${checklistItems[i].text}</td>
                 <td>${statsCompleted[i]}</td>
                 <td>${statsMissed[i]}</td>
                 <td>${statsIgnored[i]}</td>
-                <td>${statsCompleted[i] / (statsCompleted[i] + statsMissed[i]) * 100}%</td>
+                <td>${quality}%</td>
             </tr>`;
         }
     }
@@ -322,7 +331,7 @@ function tabButton_click(event) {
 }
 
 
-function genericButtonEvent(element, addText, addCheck, addSecondCheck, addThirdCheck) {
+function genericButtonEvent(element, addText, ...addChecks) {
     if (noteContent.value != "") noteContent.value += "\n"
     let addStart = noteContent.value.length;
     noteContent.value += addText.replaceAll("|", "");
@@ -333,9 +342,10 @@ function genericButtonEvent(element, addText, addCheck, addSecondCheck, addThird
     }
     noteContent.value = noteContent.value.replaceAll(", digital card\nWalked through using digital card", "\nWalked through using digital card");
     noteContent.focus();
-    if (addCheck) addChecklistItem(addCheck);
-    if (addSecondCheck) addChecklistItem(addSecondCheck);
-    if (addThirdCheck) addChecklistItem(addThirdCheck);
+
+    for (let i = 0; i < addChecks.length; i++) {
+        if (addChecks[i]) addChecklistItem(addChecks[i]);
+    }
 }
 
 
@@ -434,6 +444,13 @@ function checklistItemTick(tick, element, index) {
     }
     
     element.parentElement.outerHTML = "";
+}
+
+function dismissChecklist() {
+    let xButtons = checklist.querySelectorAll(".x-button");
+    for (let i = 0; i < xButtons.length; i++) {
+        xButtons[i].click();
+    }
 }
 
 
