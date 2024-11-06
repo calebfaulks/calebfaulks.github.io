@@ -27,8 +27,57 @@ const ITEM_CB_CALLBACK              = 22;
 const ITEM_CB_MESSAGE               = 23;
 const ITEM_TAX_PREFILLED            = 24;
 const ITEM_TAX_SELF                 = 25;
+const ITEM_QUOTE_TIER               = 26;
+const ITEM_DIGI_COVER_CHECK         = 27;
 
-const ITEMS_END                     = 26;
+const ITEMS_END                     = 28;
+
+// Official process guide processes
+const PROCESS_ANCIL         = 1;
+const PROCESS_ANCIL_CLAIM   = 2;
+const PROCESS_AMB_ENQUIRY   = 3;
+const PROCESS_AMB_CLAIM     = 4;
+const PROCESS_WELCOME_CALL  = 5;
+const PROCESS_COVER_ENQUIRY = 6;
+const PROCESS_COVER_REVIEW  = 7;
+const PROCESS_COVER_CHANGE  = 8;
+const PROCESS_CANCELLATION  = 9;
+const PROCESS_QUOTE         = 10;
+const PROCESS_UPDATE_DD     = 11;
+const PROCESS_ONE_PAYMENT   = 12;
+const PROCESS_REFUND        = 13;
+const PROCESS_DEP_ADD       = 14;
+const PROCESS_DEP_REMOVE    = 15;
+const PROCESS_SUSPENSION    = 16;
+const PROCESS_RESUMPTION    = 17;
+const PROCESS_CARD_PROBLEM  = 18;
+const PROCESS_PENSION_CARD  = 19;
+const PROCESS_LOGIN_PROBLEM = 20;
+
+// Official process guide processes - hospital
+
+
+let checklistTriggers = [];
+checklistTriggers[PROCESS_ANCIL] = [];
+checklistTriggers[PROCESS_ANCIL_CLAIM] = [];
+checklistTriggers[PROCESS_AMB_ENQUIRY] = [];
+checklistTriggers[PROCESS_AMB_CLAIM] = [];
+checklistTriggers[PROCESS_WELCOME_CALL] = [];
+checklistTriggers[PROCESS_COVER_ENQUIRY] = [];
+checklistTriggers[PROCESS_COVER_REVIEW] = [];
+checklistTriggers[PROCESS_COVER_CHANGE] = [];
+checklistTriggers[PROCESS_CANCELLATION] = [];
+checklistTriggers[PROCESS_QUOTE] = [];
+checklistTriggers[PROCESS_UPDATE_DD] = [];
+checklistTriggers[PROCESS_ONE_PAYMENT] = [];
+checklistTriggers[PROCESS_REFUND] = [];
+checklistTriggers[PROCESS_DEP_ADD] = [];
+checklistTriggers[PROCESS_DEP_REMOVE] = [];
+checklistTriggers[PROCESS_SUSPENSION] = [];
+checklistTriggers[PROCESS_RESUMPTION] = [];
+checklistTriggers[PROCESS_CARD_PROBLEM] = [];
+checklistTriggers[PROCESS_PENSION_CARD] = [];
+checklistTriggers[PROCESS_LOGIN_PROBLEM] = [];
 
 let db = null;
 
@@ -60,6 +109,8 @@ checklistItems[ITEM_CB_CALLBACK] = {text: "CB set callback"};
 checklistItems[ITEM_CB_MESSAGE] = {text: "CB leave message"};
 checklistItems[ITEM_TAX_PREFILLED] = {text: "Tax pre-filled", required: true};
 checklistItems[ITEM_TAX_SELF] = {text: "Tax statement self-service", required: true};
+checklistItems[ITEM_QUOTE_TIER] = {text: "Quote confirm AGR tier", required: true};
+checklistItems[ITEM_DIGI_COVER_CHECK] = {text: "Check limits digitally"};
 
 let statsCompleted = [];
 let statsMissed = [];

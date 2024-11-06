@@ -32,7 +32,7 @@
 							<th>Completed</th>
 							<th>Missed</th>
 							<th>Ignored</th>
-							<th>Quality</th>
+							<th>Score</th>
 						</tr>
 					</thead>
 					<tbody id="stats-table">
@@ -52,13 +52,13 @@
 			<button onclick="genericButtonEvent(this, 'Hosp enquiry - transferred to hospital')">Hosp</button>
 			<button onclick="genericButtonEvent(this, 'Hosp claim enquiry - transferred to priority')">Prio</button>
 			<button onclick="genericButtonEvent(this, 'Cancellation (|reason|) - transferred to retention')">Retention</button>
-			<button onclick="genericButtonEvent(this, 'Quoted |product|, MUST ADV 30 DAYS', ITEM_QUOTE_VALID)">Quote</button>
+			<button onclick="genericButtonEvent(this, 'Quoted |product|, MUST ADV 30 DAYS', ITEM_QUOTE_TIER, ITEM_QUOTE_VALID)">Quote</button>
 			<button onclick="genericButtonEvent(this, 'Saved ancil check')">Ancil</button>
 			<button onclick="genericButtonEvent(this, 'Walked through claiming online')">Digi Claim</button>
 			<button onclick="genericButtonEvent(this, 'Took one-time payment')">1T Payment</button>
 			<button onclick="genericButtonEvent(this, 'Added spouse auth for |spouse|')">Spouse Auth</button>
 			<button onclick="genericButtonEvent(this, 'OB', ITEM_RECORDED)">OB</button>
-			<button onclick="genericButtonEvent(this, 'Cover enquiry', ITEM_COVER_REVIEW)">Cover Enq</button>
+			<button onclick="genericButtonEvent(this, 'Cover enquiry |category|', ITEM_DIGI_COVER_CHECK, ITEM_COVER_REVIEW)">Cover Enq</button>
 			<button onclick="genericButtonEvent(this, 'Logged with CSS, MUST ADV CSS TURNAROUND', ITEM_CSS_TURNAROUND)">Log CSS</button>
 			<button onclick="genericButtonEvent(this, 'Logged with CRT, MUST ADV CRT TURNAROUND', ITEM_CRT_TURNAROUND)">Log CRT</button>
 			<button onclick="genericButtonEvent(this, 'Changed cover, MUST READ CHANGE SCRIPT, MUST ADV WAITS, MUST ADV UPCOMING PAYMENTS', ITEM_CHANGE_SCRIPT, ITEM_CHANGE_ADV_WAITS, ITEM_CHANGE_ADV_PAYMENTS)">Cover Change</button>
@@ -71,7 +71,7 @@
 			<button onclick="genericButtonEvent(this, 'Attempted CB, no response, MUST RESET CALLBACK/LEAVE MESSAGE', ITEM_CB_CALLBACK, ITEM_CB_MESSAGE)">CB Fail</button>
 			<button onclick="genericButtonEvent(this, 'Requesting tax statement for |self|\nMUST ADV PRE-FILLED, MUST OFFER SELF-SERVICE', ITEM_TAX_PREFILLED, ITEM_TAX_SELF)">Tax</button>
 			<button onclick="genericButtonEvent(this, 'Follow up on |category| claim, why not paid')">Claim Not Paid</button>
-			<!-- Add: why claim not paid -->
+			<!-- Add: CB, welcome call, cover review - Edit: cover enquiry (offer digi extras usage) -->
 		</div>
 		<div class="member-info">
 			<input id="member-name" type="text" placeholder="Name">
