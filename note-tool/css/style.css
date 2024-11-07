@@ -24,6 +24,7 @@
 :root {
 	color: var( --cf-color-darker );
 	font-family: 'Kanit', sans-serif;
+	font-size: 14px;
 }
 
 
