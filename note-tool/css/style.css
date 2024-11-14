@@ -13,6 +13,8 @@
 	--cf-color-lighter: #CCC;
 	--cf-color-lightest: #EEE;
 	--cf-color-white: #FFF;
+	--cf-color-confirm: #0a9e1e;
+	--cf-color-cancel: #af0d0d;
 
 	/* font */
 	--cf-font-size: 8;
@@ -73,10 +75,18 @@ body {
 	width: 100%;
 }
 
+.checklist-item {
+	margin-bottom: 5px;
+}
+
 .checklist-item-dropdown {
 	background-color: var( --cf-color-lighter );
 	border-radius: 3px;
+	margin: 5px 0;
 	padding: 2px 5px;
+}
+.checklist-item-dropdown-heading span {
+	font-weight: bold;
 }
 .checklist-item-dropdown-content {
 	display: none;
@@ -87,11 +97,31 @@ body {
 }
 
 .tick-button {
-
+	background-color: var( --cf-color-confirm );
+	border-color: var( --cf-color-confirm );
+	border-width: 2px;
+	border-style: solid;
+	border-radius: 5px;
+	color: var( --cf-color-white );
 }
 
 .x-button {
+	background-color: var( --cf-color-cancel );
+	border-color: var( --cf-color-cancel );
+	border-width: 2px;
+	border-style: solid;
+	border-radius: 5px;
+	color: var( --cf-color-white );
+}
 
+.checklist-item-dropdown-heading .tick-button {
+	background-color: var( --cf-color-white );
+	color: var( --cf-color-confirm );
+}
+
+.checklist-item-dropdown-heading .x-button {
+	background-color: var( --cf-color-white );
+	color: var( --cf-color-cancel );
 }
 
 #notes-archive {
