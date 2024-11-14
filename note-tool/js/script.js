@@ -2,7 +2,18 @@ const STAT_MISSED       = 1;
 const STAT_IGNORED      = 2;
 const STAT_COMPLETED    = 3;
 
-const ITEM_ID                       = 1; // Unused
+// Button categories
+const CATEGORY_UPDATE       = 1;
+const CATEGORY_CLAIM        = 2;
+const CATEGORY_COVER        = 3;
+const CATEGORY_PAYMENT      = 4;
+const CATEGORY_DEPENDANT    = 5;
+const CATEGORY_POLICY       = 6;
+const CATEGORY_CALL         = 7;
+const CATEGORY_TRANS_LOG    = 8;
+const CATEGORY_HOSPITAL     = 9;
+
+const ITEM_ID                       = 1;
 const ITEM_AGENDA                   = 2;
 const ITEM_TIMEFRAME                = 3;
 const ITEM_UPDATE_DETAILS           = 4;
@@ -29,8 +40,47 @@ const ITEM_TAX_PREFILLED            = 24;
 const ITEM_TAX_SELF                 = 25;
 const ITEM_QUOTE_TIER               = 26;
 const ITEM_DIGI_COVER_CHECK         = 27;
+const ITEM_NAME_CONFIRM_MEDICARE    = 28;
+const ITEM_NAME_LOG_PAT             = 29;
+const ITEM_NAME_CARDS               = 30;
+const ITEM_HOSP_ENGAGE              = 31;
+const ITEM_HOSP_BREAKDOWN           = 32;
+const ITEM_HOSP_DISCOVERY           = 33;
+const ITEM_HOSP_CONFIRM_INFO        = 34;
+const ITEM_HOSP_CONFIRM_COVERED     = 35;
+const ITEM_HOSP_CONFIRM_EXCESS      = 36;
+const ITEM_HOSP_CHECK_PSYCH_REHAB   = 37;
+const ITEM_HOSP_WARN_OOPS           = 38;
+const ITEM_HOSP_RECOMMEND_IFC       = 39;
+const ITEM_HOSP_WRAP                = 40;
+const ITEM_HOSP_MED_RATE            = 41;
+const ITEM_HOSP_MED_IFC             = 42;
+const ITEM_HOSP_MED_OOPS            = 43;
+const ITEM_HOSP_MED_MEDIGAP         = 44;
+const ITEM_HOSP_APR_RATE            = 45;
+const ITEM_HOSP_APR_OOPS            = 46;
+const ITEM_HOSP_APR_IFC             = 47;
+const ITEM_HOSP_APR_MEDIGAP         = 48;
+const ITEM_HOSP_APR_PATH_RAD        = 49;
+const ITEM_HOSP_MED_APR_WRAP        = 50;
+const ITEM_HOSP_OFFER_CLAIM         = 51;
+const ITEM_HOSP_CLAIM_AUTO          = 52;
+const ITEM_HOSP_CLAIM_MEDIGAP       = 53;
+const ITEM_HOSP_CLAIM_TWOWAY        = 54;
+const ITEM_HOSP_OUTCOME_WRAP        = 55;
+const ITEM_HOSP_INFO_MEDIGAP        = 56;
+const ITEM_HOSP_INFO_IFC            = 57;
+const ITEM_HOSP_INFO_AFTER_REHAB    = 58;
+const ITEM_HOSP_INFO_DIGI           = 59;
+const ITEM_HOSP_INFO_MYGOV          = 60;
+const ITEM_HOSP_NC_UPGRADE          = 61;
+const ITEM_HOSP_NC_SOLVE            = 62;
+const ITEM_HOSP_WAIT_DATE           = 63;
+const ITEM_HOSP_WAIT_DELAY          = 64;
+const ITEM_HOSP_WAIT_SOLVE          = 65;
+const ITEM_HOSP_WISH_WELL           = 66;
 
-const ITEMS_END                     = 28;
+const ITEMS_END                     = 67;
 
 // Official process guide processes
 const PROCESS_ANCIL         = 1;
@@ -55,62 +105,150 @@ const PROCESS_PENSION_CARD  = 19;
 const PROCESS_LOGIN_PROBLEM = 20;
 
 // Official process guide processes - hospital
+const PROCESSES_START                   = 500;
+
+const PROCESS_HOSP_CHECK_START          = PROCESSES_START + 1;
+const PROCESS_HOSP_CHECK_COVERED_HOSP   = PROCESSES_START + 2;
+const PROCESS_HOSP_CHECK_COVERED_MED    = PROCESSES_START + 3;
+const PROCESS_HOSP_CHECK_COVERED_CLAIM  = PROCESSES_START + 4;
+const PROCESS_HOSP_CHECK_INFO           = PROCESSES_START + 5;
+const PROCESS_HOSP_CHECK_NOT_COVERED    = PROCESSES_START + 6;
+const PROCESS_HOSP_CHECK_WAIT           = PROCESSES_START + 7;
+
+const PROCESS_NAMES = [];
+PROCESS_NAMES[PROCESS_HOSP_CHECK_START]         = "Hospital check";
+PROCESS_NAMES[PROCESS_HOSP_CHECK_COVERED_HOSP]  = "Covered - hospital";
+PROCESS_NAMES[PROCESS_HOSP_CHECK_COVERED_MED]   = "Covered - medical";
+PROCESS_NAMES[PROCESS_HOSP_CHECK_COVERED_CLAIM] = "Covered - claiming";
+PROCESS_NAMES[PROCESS_HOSP_CHECK_INFO]          = "More info required";
+PROCESS_NAMES[PROCESS_HOSP_CHECK_NOT_COVERED]   = "Not covered";
+PROCESS_NAMES[PROCESS_HOSP_CHECK_WAIT]          = "In waiting periods";
+
+//
 
 
-let checklistTriggers = [];
-checklistTriggers[PROCESS_ANCIL] = [];
-checklistTriggers[PROCESS_ANCIL_CLAIM] = [];
-checklistTriggers[PROCESS_AMB_ENQUIRY] = [];
-checklistTriggers[PROCESS_AMB_CLAIM] = [];
-checklistTriggers[PROCESS_WELCOME_CALL] = [];
-checklistTriggers[PROCESS_COVER_ENQUIRY] = [];
-checklistTriggers[PROCESS_COVER_REVIEW] = [];
-checklistTriggers[PROCESS_COVER_CHANGE] = [];
-checklistTriggers[PROCESS_CANCELLATION] = [];
-checklistTriggers[PROCESS_QUOTE] = [];
-checklistTriggers[PROCESS_UPDATE_DD] = [];
-checklistTriggers[PROCESS_ONE_PAYMENT] = [];
-checklistTriggers[PROCESS_REFUND] = [];
-checklistTriggers[PROCESS_DEP_ADD] = [];
-checklistTriggers[PROCESS_DEP_REMOVE] = [];
-checklistTriggers[PROCESS_SUSPENSION] = [];
-checklistTriggers[PROCESS_RESUMPTION] = [];
-checklistTriggers[PROCESS_CARD_PROBLEM] = [];
-checklistTriggers[PROCESS_PENSION_CARD] = [];
-checklistTriggers[PROCESS_LOGIN_PROBLEM] = [];
+const CHECKLIST_TRIGGERS = [];
+CHECKLIST_TRIGGERS[PROCESS_ANCIL] = [];
+CHECKLIST_TRIGGERS[PROCESS_ANCIL_CLAIM] = [];
+CHECKLIST_TRIGGERS[PROCESS_AMB_ENQUIRY] = [];
+CHECKLIST_TRIGGERS[PROCESS_AMB_CLAIM] = [];
+CHECKLIST_TRIGGERS[PROCESS_WELCOME_CALL] = [];
+CHECKLIST_TRIGGERS[PROCESS_COVER_ENQUIRY] = [];
+CHECKLIST_TRIGGERS[PROCESS_COVER_REVIEW] = [];
+CHECKLIST_TRIGGERS[PROCESS_COVER_CHANGE] = [];
+CHECKLIST_TRIGGERS[PROCESS_CANCELLATION] = [];
+CHECKLIST_TRIGGERS[PROCESS_QUOTE] = [];
+CHECKLIST_TRIGGERS[PROCESS_UPDATE_DD] = [];
+CHECKLIST_TRIGGERS[PROCESS_ONE_PAYMENT] = [];
+CHECKLIST_TRIGGERS[PROCESS_REFUND] = [];
+CHECKLIST_TRIGGERS[PROCESS_DEP_ADD] = [];
+CHECKLIST_TRIGGERS[PROCESS_DEP_REMOVE] = [];
+CHECKLIST_TRIGGERS[PROCESS_SUSPENSION] = [];
+CHECKLIST_TRIGGERS[PROCESS_RESUMPTION] = [];
+CHECKLIST_TRIGGERS[PROCESS_CARD_PROBLEM] = [];
+CHECKLIST_TRIGGERS[PROCESS_PENSION_CARD] = [];
+CHECKLIST_TRIGGERS[PROCESS_LOGIN_PROBLEM] = [];
+CHECKLIST_TRIGGERS[PROCESS_HOSP_CHECK_START] = [ITEM_HOSP_ENGAGE, ITEM_HOSP_BREAKDOWN, ITEM_HOSP_DISCOVERY, ITEM_HOSP_CONFIRM_INFO];
+CHECKLIST_TRIGGERS[PROCESS_HOSP_CHECK_COVERED_HOSP] = [ITEM_HOSP_CHECK_PSYCH_REHAB, ITEM_HOSP_WARN_OOPS, ITEM_HOSP_RECOMMEND_IFC, ITEM_HOSP_WRAP];
+CHECKLIST_TRIGGERS[PROCESS_HOSP_CHECK_COVERED_MED] = [ITEM_HOSP_MED_RATE, ITEM_HOSP_MED_IFC, ITEM_HOSP_MED_OOPS, ITEM_HOSP_MED_MEDIGAP, ITEM_HOSP_APR_RATE, ITEM_HOSP_APR_OOPS, ITEM_HOSP_APR_IFC, ITEM_HOSP_APR_MEDIGAP, ITEM_HOSP_APR_PATH_RAD, ITEM_HOSP_MED_APR_WRAP];
+CHECKLIST_TRIGGERS[PROCESS_HOSP_CHECK_COVERED_CLAIM] = [ITEM_HOSP_OFFER_CLAIM, ITEM_HOSP_CLAIM_AUTO, ITEM_HOSP_CLAIM_MEDIGAP, ITEM_HOSP_CLAIM_TWOWAY];
+CHECKLIST_TRIGGERS[PROCESS_HOSP_CHECK_INFO] = [ITEM_HOSP_INFO_MEDIGAP, ITEM_HOSP_INFO_IFC, ITEM_HOSP_INFO_AFTER_REHAB, ITEM_HOSP_INFO_DIGI, ITEM_HOSP_INFO_MYGOV];
+CHECKLIST_TRIGGERS[PROCESS_HOSP_CHECK_NOT_COVERED] = [ITEM_HOSP_NC_UPGRADE, ITEM_HOSP_NC_SOLVE];
+CHECKLIST_TRIGGERS[PROCESS_HOSP_CHECK_WAIT] = [ITEM_HOSP_WAIT_DATE, ITEM_HOSP_WAIT_DELAY, ITEM_HOSP_WAIT_SOLVE];
+
+// Buttons
+const ACTION_BUTTONS = [
+    { name: "AGR", note: "Applied AGR, MUST READ AGR SCRIPT",
+        triggers: [ITEM_AGR_SCRIPT], categories: catArray(CATEGORY_UPDATE, CATEGORY_PAYMENT) },
+    { name: "DD", note: "Updated DD, MUST READ DD SCRIPT",
+        triggers: [PROCESS_UPDATE_DD], categories: catArray(CATEGORY_UPDATE, CATEGORY_PAYMENT) },
+    { name: "Email", note: "Updated email, MUST READ EMAIL SCRIPT",
+        triggers: [ITEM_EMAIL_SCRIPT], categories: catArray(CATEGORY_UPDATE) },
+    { name: "Home", note: "Updated home address",
+        categories: catArray(CATEGORY_UPDATE) },
+    { name: "Medicare", note: "Updated medicare card info",
+        categories: catArray(CATEGORY_UPDATE) },
+    { name: "Name", note: "Updated name, MUST CONFIRM MEDICARE INFO, MIGHT LOG WITH PAT, MUST ADV NEW CARDS",
+        triggers: [ITEM_NAME_CONFIRM_MEDICARE, ITEM_NAME_LOG_PAT, ITEM_NAME_CARDS], categories: catArray(CATEGORY_UPDATE) },
+    { name: "Pension", note: "Updated pension card info",
+        categories: catArray(CATEGORY_UPDATE) },
+    { name: "Phone", note: "Updated phone number",
+        categories: catArray(CATEGORY_UPDATE) },
+    { name: "Postal", note: "Updated postal address",
+        categories: catArray(CATEGORY_UPDATE) },
+    { name: "Spouse auth", note: "Added spouse auth for |spouse|",
+        categories: catArray(CATEGORY_UPDATE) },
+    { name: "Hosp check", note: "Hospital eligibility check\nPatient: |policy holder|\nHospital: \nItems: \nExcess: ",
+        triggers: [PROCESS_HOSP_CHECK_START], categories: catArray(CATEGORY_HOSPITAL) }
+];
 
 let db = null;
 
 let scheduleItems = [];
 
-let checklistItems = [];
-checklistItems[ITEM_ID] = {text: "Check ID"};
-checklistItems[ITEM_AGENDA] = {text: "Clear agenda"};
-checklistItems[ITEM_TIMEFRAME] = {text: "Timeframe"};
-checklistItems[ITEM_UPDATE_DETAILS] = {text: "Check/update contact details"};
-checklistItems[ITEM_DIGITAL_WALKTHROUGH] = {text: "Offer digital walkthrough"};
-checklistItems[ITEM_RECAP] = {text: "Strong recap"};
-checklistItems[ITEM_DD_SCRIPT] = {text: "DD script", required: true};
-checklistItems[ITEM_EMAIL_SCRIPT] = {text: "Email script", required: true};
-checklistItems[ITEM_AGR_SCRIPT] = {text: "AGR script", required: true};
-checklistItems[ITEM_QUOTE_VALID] = {text: "Quote validity", required: true};
-checklistItems[ITEM_RECORDED] = {text: "Call recorded disclaimer", required: true};
-checklistItems[ITEM_COVER_REVIEW] = {text: "Cover review"};
-checklistItems[ITEM_CSS_TURNAROUND] = {text: "CSS turnaround", required: true};
-checklistItems[ITEM_CRT_TURNAROUND] = {text: "CRT turnaround", required: true};
-checklistItems[ITEM_CHANGE_SCRIPT] = {text: "Cover change script", required: true};
-checklistItems[ITEM_CHANGE_ADV_WAITS] = {text: "Cover change wait periods", required: true};
-checklistItems[ITEM_CHANGE_ADV_PAYMENTS] = {text: "Cover change upcoming payments", required: true};
-checklistItems[ITEM_CARD_DELIVERY] = {text: "Card delivery time", required: true};
-checklistItems[ITEM_PROMOTE_DIGITAL_CARD] = {text: "Promote digital card"};
-checklistItems[ITEM_SUSPENSION_ELIGIBILITY] = {text: "Suspension eligibility", required: true};
-checklistItems[ITEM_SUSPENSION_IMPACTS] = {text: "Suspension impacts", required: true};
-checklistItems[ITEM_CB_CALLBACK] = {text: "CB set callback"};
-checklistItems[ITEM_CB_MESSAGE] = {text: "CB leave message"};
-checklistItems[ITEM_TAX_PREFILLED] = {text: "Tax pre-filled", required: true};
-checklistItems[ITEM_TAX_SELF] = {text: "Tax statement self-service", required: true};
-checklistItems[ITEM_QUOTE_TIER] = {text: "Quote confirm AGR tier", required: true};
-checklistItems[ITEM_DIGI_COVER_CHECK] = {text: "Check limits digitally"};
+const CHECKLIST_ITEMS = [];
+CHECKLIST_ITEMS[ITEM_ID] = {text: "Check ID"};
+CHECKLIST_ITEMS[ITEM_AGENDA] = {text: "Clear agenda"};
+CHECKLIST_ITEMS[ITEM_TIMEFRAME] = {text: "Timeframe"};
+CHECKLIST_ITEMS[ITEM_UPDATE_DETAILS] = {text: "Check/update contact details"};
+CHECKLIST_ITEMS[ITEM_DIGITAL_WALKTHROUGH] = {text: "Offer digital walkthrough"};
+CHECKLIST_ITEMS[ITEM_RECAP] = {text: "Strong recap"};
+CHECKLIST_ITEMS[ITEM_DD_SCRIPT] = {text: "DD script", required: true};
+CHECKLIST_ITEMS[ITEM_EMAIL_SCRIPT] = {text: "Email script", required: true};
+CHECKLIST_ITEMS[ITEM_AGR_SCRIPT] = {text: "AGR script", required: true};
+CHECKLIST_ITEMS[ITEM_QUOTE_VALID] = {text: "Quote validity", required: true};
+CHECKLIST_ITEMS[ITEM_RECORDED] = {text: "Call recorded disclaimer", required: true};
+CHECKLIST_ITEMS[ITEM_COVER_REVIEW] = {text: "Cover review"};
+CHECKLIST_ITEMS[ITEM_CSS_TURNAROUND] = {text: "CSS turnaround", required: true};
+CHECKLIST_ITEMS[ITEM_CRT_TURNAROUND] = {text: "CRT turnaround", required: true};
+CHECKLIST_ITEMS[ITEM_CHANGE_SCRIPT] = {text: "Cover change script", required: true};
+CHECKLIST_ITEMS[ITEM_CHANGE_ADV_WAITS] = {text: "Cover change wait periods", required: true};
+CHECKLIST_ITEMS[ITEM_CHANGE_ADV_PAYMENTS] = {text: "Cover change upcoming payments", required: true};
+CHECKLIST_ITEMS[ITEM_CARD_DELIVERY] = {text: "Card delivery time", required: true};
+CHECKLIST_ITEMS[ITEM_PROMOTE_DIGITAL_CARD] = {text: "Promote digital card"};
+CHECKLIST_ITEMS[ITEM_SUSPENSION_ELIGIBILITY] = {text: "Suspension eligibility", required: true};
+CHECKLIST_ITEMS[ITEM_SUSPENSION_IMPACTS] = {text: "Suspension impacts", required: true};
+CHECKLIST_ITEMS[ITEM_CB_CALLBACK] = {text: "CB set callback"};
+CHECKLIST_ITEMS[ITEM_CB_MESSAGE] = {text: "CB leave message"};
+CHECKLIST_ITEMS[ITEM_TAX_PREFILLED] = {text: "Tax pre-filled", required: true};
+CHECKLIST_ITEMS[ITEM_TAX_SELF] = {text: "Tax statement self-service", required: true};
+CHECKLIST_ITEMS[ITEM_QUOTE_TIER] = {text: "Quote confirm AGR tier", required: true};
+CHECKLIST_ITEMS[ITEM_DIGI_COVER_CHECK] = {text: "Check limits digitally"};
+CHECKLIST_ITEMS[ITEM_HOSP_ENGAGE] = {text: "Engage re hospital admission"};
+CHECKLIST_ITEMS[ITEM_HOSP_BREAKDOWN] = {text: "Give hospital check breakdown"};
+CHECKLIST_ITEMS[ITEM_HOSP_DISCOVERY] = {text: "Thorough discovery"};
+CHECKLIST_ITEMS[ITEM_HOSP_CONFIRM_INFO] = {text: "Confirm member gave correct info"};
+CHECKLIST_ITEMS[ITEM_HOSP_CONFIRM_COVERED] = {text: "Tell member they're covered"};
+CHECKLIST_ITEMS[ITEM_HOSP_CONFIRM_EXCESS] = {text: "State excess payable"};
+CHECKLIST_ITEMS[ITEM_HOSP_CHECK_PSYCH_REHAB] = {text: "Psych/Rehab: ask program name"};
+CHECKLIST_ITEMS[ITEM_HOSP_WARN_OOPS] = {text: "Warn of possible OOPs"};
+CHECKLIST_ITEMS[ITEM_HOSP_RECOMMEND_IFC] = {text: "Recommend hospital IFC"};
+CHECKLIST_ITEMS[ITEM_HOSP_WRAP] = {text: "Check in with member"};
+CHECKLIST_ITEMS[ITEM_HOSP_MED_RATE] = {text: "Covered to Medicare rate"};
+CHECKLIST_ITEMS[ITEM_HOSP_MED_IFC] = {text: "Recommend IFC from specialist"};
+CHECKLIST_ITEMS[ITEM_HOSP_MED_OOPS] = {text: "OOPs when charged beyond rate"};
+CHECKLIST_ITEMS[ITEM_HOSP_MED_MEDIGAP] = {text: "Discuss/check medigap"};
+CHECKLIST_ITEMS[ITEM_HOSP_APR_RATE] = {text: "Covered to Medicare rate"};
+CHECKLIST_ITEMS[ITEM_HOSP_APR_OOPS] = {text: "Anything above that is an OOP"};
+CHECKLIST_ITEMS[ITEM_HOSP_APR_IFC] = {text: "Recommend IFC from anaesthetist"};
+CHECKLIST_ITEMS[ITEM_HOSP_APR_MEDIGAP] = {text: "Check anaesthetist medigap"};
+CHECKLIST_ITEMS[ITEM_HOSP_APR_PATH_RAD] = {text: "Path/Radio covered only to Medicare rate"};
+CHECKLIST_ITEMS[ITEM_HOSP_MED_APR_WRAP] = {text: "Check in with member"};
+CHECKLIST_ITEMS[ITEM_HOSP_OFFER_CLAIM] = {text: "Offer to walk through claiming"};
+CHECKLIST_ITEMS[ITEM_HOSP_CLAIM_AUTO] = {text: "Hosp submits their accounts to nib"};
+CHECKLIST_ITEMS[ITEM_HOSP_CLAIM_MEDIGAP] = {text: "Medigap specialist claims for you"};
+CHECKLIST_ITEMS[ITEM_HOSP_CLAIM_TWOWAY] = {text: "Otherwise 2-way claim to Medicare"};
+CHECKLIST_ITEMS[ITEM_HOSP_OUTCOME_WRAP] = {text: "Confirm member understands everything"};
+CHECKLIST_ITEMS[ITEM_HOSP_INFO_MEDIGAP] = {text: "Ask about medigap"};
+CHECKLIST_ITEMS[ITEM_HOSP_INFO_IFC] = {text: "Get IFC"};
+CHECKLIST_ITEMS[ITEM_HOSP_INFO_AFTER_REHAB] = {text: "Discuss aftercare/rehab"};
+CHECKLIST_ITEMS[ITEM_HOSP_INFO_DIGI] = {text: "Promote website/app"};
+CHECKLIST_ITEMS[ITEM_HOSP_INFO_MYGOV] = {text: "mygov?"};
+CHECKLIST_ITEMS[ITEM_HOSP_NC_UPGRADE] = {text: "Offer to increase cover"};
+CHECKLIST_ITEMS[ITEM_HOSP_NC_SOLVE] = {text: "Empathise and offer solutions"};
+CHECKLIST_ITEMS[ITEM_HOSP_WAIT_DATE] = {text: "Advise wait period end date"};
+CHECKLIST_ITEMS[ITEM_HOSP_WAIT_DELAY] = {text: "Discuss delaying surgery"};
+CHECKLIST_ITEMS[ITEM_HOSP_WAIT_SOLVE] = {text: "Empathise and offer solutions"};
 
 let statsCompleted = [];
 let statsMissed = [];
@@ -157,6 +295,14 @@ function initScript() {
     resetChecklist();
 
     initDB();
+}
+
+function catArray(...categories) {
+    let newArray = [];
+    for (let i = 0; i < categories.length; i++) {
+        newArray[categories[i]] = true;
+    }
+    return newArray;
 }
 
 function clearCall(event) {
@@ -239,23 +385,52 @@ function resetChecklist() {
     addChecklistItem(ITEM_RECAP);
 }
 
+function toggleChecklistItemDropdown(element) {
+    element.parentElement.querySelector(".checklist-item-dropdown-content").classList.toggle("dropdown-expanded");
+}
+
 function addChecklistItem(item) {
     if (currentCall.callStats[item]) return;
 
-    currentCall.callStats[item] = STAT_MISSED;
-    checklist.innerHTML += `
-    <div class="checklist-item">
-        <button class="tick-button" onclick="checklistItemTick(true, this, ${item})">Y</button>
-        <button class="x-button" onclick="checklistItemTick(false, this, ${item})">N</button>
-        <span>${checklistItems[item].text}</span>
-    </div>`;
+    if (item > PROCESSES_START) {
+        let insertContent = `
+        <div class="checklist-item-dropdown">
+            <div class="checklist-item-dropdown-heading" onclick="toggleChecklistItemDropdown(this)">
+                <button class="tick-button" onclick="checklistItemDropdownTick(true, this)">Y</button>
+                <button class="x-button" onclick="checklistItemDropdownTick(false, this)">N</button>
+                <span>${PROCESS_NAMES[item]}</span>
+            </div>
+            <div class="checklist-item-dropdown-content">`;
+
+        for (let i = 0; i < CHECKLIST_TRIGGERS[item].length; i++) {
+            let cur = CHECKLIST_TRIGGERS[item][i];
+            insertContent += `
+            <div class="checklist-item">
+                <button class="tick-button" onclick="checklistItemTick(true, this, ${cur})">Y</button>
+                <button class="x-button" onclick="checklistItemTick(false, this, ${cur})">N</button>
+                <span>${CHECKLIST_ITEMS[cur].text}</span>
+            </div>`;
+        }
+
+        insertContent += `</div></div>`;
+        checklist.innerHTML += insertContent;
+    }
+    else {
+        currentCall.callStats[item] = STAT_MISSED;
+        checklist.innerHTML += `
+        <div class="checklist-item">
+            <button class="tick-button" onclick="checklistItemTick(true, this, ${item})">Y</button>
+            <button class="x-button" onclick="checklistItemTick(false, this, ${item})">N</button>
+            <span>${CHECKLIST_ITEMS[item].text}</span>
+        </div>`;
+    }
 }
 
 function removeChecklistItem(item, complete) {
     let checklistChildren = checklist.children;
 
     for (let i = checklistChildren.length - 1; i >= 0; i--) {
-        if (checklistChildren[i].querySelector("span").innerText == checklistItems[item].text) {
+        if (checklistChildren[i].querySelector("span").innerText == CHECKLIST_ITEMS[item].text) {
             checklist.removeChild(checklistChildren[i]);
             if (complete) currentCall.callStats[item] = STAT_COMPLETED;
             else currentCall.callStats[item] = undefined;
@@ -312,7 +487,7 @@ function updateStatsTable() {
             quality = Math.round(quality);
             statsTable.innerHTML += `
             <tr>
-                <td>${checklistItems[i].text}</td>
+                <td>${CHECKLIST_ITEMS[i].text}</td>
                 <td>${statsCompleted[i]}</td>
                 <td>${statsMissed[i]}</td>
                 <td>${statsIgnored[i]}</td>
@@ -409,6 +584,17 @@ function myNotes_change(event) {
 
 // Checklist button functions
 
+function checklistItemDropdownTick(tick, element) {
+    let childChecks;
+
+    if (tick) childChecks = element.parentElement.parentElement.querySelectorAll(".tick-button");
+    else childChecks = element.parentElement.parentElement.querySelectorAll(".x-button");
+
+    for (let i = 0; i < childChecks.length; i++) {
+        childChecks[i].click();
+    }
+}
+
 function checklistItemTick(tick, element, index) {
     if (tick) {
         switch (index) {
@@ -494,7 +680,9 @@ function checklistItemTick(tick, element, index) {
         }
     }
     
+    let dropdownParent = element.closest(".checklist-item-dropdown-content");
     element.parentElement.outerHTML = "";
+    if (dropdownParent.children.length == 0) dropdownParent.parentElement.outerHTML = "";
 }
 
 function dismissChecklist() {

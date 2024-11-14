@@ -70,6 +70,28 @@ body {
 
 #checklist {
 	margin: 20px 0px;
+	width: 100%;
+}
+
+.checklist-item-dropdown {
+	background-color: var( --cf-color-lighter );
+	border-radius: 3px;
+	padding: 2px 5px;
+}
+.checklist-item-dropdown-content {
+	display: none;
+}
+.checklist-item-dropdown-content.dropdown-expanded {
+	display: block;
+	margin-top: 10px;
+}
+
+.tick-button {
+
+}
+
+.x-button {
+
 }
 
 #notes-archive {
