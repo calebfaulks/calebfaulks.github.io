@@ -71,8 +71,8 @@
 			<button onclick="genericButtonEvent(this, 'Attempted CB, no response, MUST RESET CALLBACK/LEAVE MESSAGE', ITEM_CB_CALLBACK, ITEM_CB_MESSAGE)">CB Fail</button>
 			<button onclick="genericButtonEvent(this, 'Requesting tax statement for |self|\nMUST ADV PRE-FILLED, MUST OFFER SELF-SERVICE', ITEM_TAX_PREFILLED, ITEM_TAX_SELF)">Tax</button>
 			<button onclick="genericButtonEvent(this, 'Follow up on |category| claim, why not paid')">Claim Not Paid</button>
-			<button onclick="genericButtonEvent(this, 'Hosp check', PROCESS_HOSP_CHECK_START)">Hosp Check</button>
-			<button onclick="genericButtonEvent(this, 'Adv covered', PROCESS_HOSP_CHECK_COVERED_HOSP, PROCESS_HOSP_CHECK_COVERED_MED, PROCESS_HOSP_CHECK_COVERED_CLAIM, ITEM_HOSP_OUTCOME_WRAP, PROCESS_HOSP_CHECK_WRAP)">Hosp Covered</button>
+			<button onclick="genericButtonEvent(this, 'Hospital eligibility check\nPatient: |policy holder|\nHospital: \nItems: \nExcess: ', PROCESS_HOSP_CHECK_START)">Hosp Check</button>
+			<button onclick="genericButtonEvent(this, 'Adv covered\nHospital covered to contracted rate, possible OOPs for take-home meds, luxuries, get an IFC to confirm\nSurgeons/anaesthetist covered to medicare rate, charges beyond that are OOP, get an IFC, ask about medigap\nPathology/Radiology covered to medicare rate, charges beyond that are OOP\nConfirmed member understands hosp/med cover', PROCESS_HOSP_CHECK_COVERED_HOSP, PROCESS_HOSP_CHECK_COVERED_MED, PROCESS_HOSP_CHECK_COVERED_CLAIM, ITEM_HOSP_OUTCOME_WRAP, PROCESS_HOSP_CHECK_WRAP)">Hosp Covered</button>
 			<button onclick="genericButtonEvent(this, 'More info required', PROCESS_HOSP_CHECK_INFO, PROCESS_HOSP_CHECK_WRAP)">Hosp Need Info</button>
 			<button onclick="genericButtonEvent(this, 'Adv not covered', PROCESS_HOSP_CHECK_NOT_COVERED)">Hosp Not Covered</button>
 			<button onclick="genericButtonEvent(this, 'Hosp check', PROCESS_HOSP_CHECK_WAIT)">Hosp Wait Periods</button>
