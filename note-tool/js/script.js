@@ -82,8 +82,11 @@ const ITEM_HOSP_CHECK_RECAP         = 66;
 const ITEM_HOSP_CHECK_SEND_LINK     = 67;
 const ITEM_HOSP_CHECK_WRAP          = 68;
 const ITEM_HOSP_WISH_WELL           = 69;
+const ITEM_MAIL_CLAIM_WARNING       = 70;
+const ITEM_MAIL_CLAIM_FORM          = 71;
+const ITEM_MAIL_CLAIM_WALKTHROUGH   = 72;
 
-const ITEMS_END                     = 70;
+const ITEMS_END                     = 73;
 
 // Official process guide processes
 const PROCESS_ANCIL         = 1;
@@ -127,6 +130,7 @@ PROCESS_NAMES[PROCESS_HOSP_CHECK_COVERED_CLAIM] = "Covered - claiming";
 PROCESS_NAMES[PROCESS_HOSP_CHECK_INFO]          = "More info required";
 PROCESS_NAMES[PROCESS_HOSP_CHECK_NOT_COVERED]   = "Not covered";
 PROCESS_NAMES[PROCESS_HOSP_CHECK_WAIT]          = "In waiting periods";
+PROCESS_NAMES[PROCESS_HOSP_CHECK_WRAP]          = "Hospital check wrap-up";
 
 //
 
@@ -159,6 +163,7 @@ CHECKLIST_TRIGGERS[PROCESS_HOSP_CHECK_COVERED_CLAIM] = [ITEM_HOSP_OFFER_CLAIM, I
 CHECKLIST_TRIGGERS[PROCESS_HOSP_CHECK_INFO] = [ITEM_HOSP_INFO_MEDIGAP, ITEM_HOSP_INFO_IFC, ITEM_HOSP_INFO_AFTER_REHAB, ITEM_HOSP_INFO_DIGI, ITEM_HOSP_INFO_MYGOV];
 CHECKLIST_TRIGGERS[PROCESS_HOSP_CHECK_NOT_COVERED] = [ITEM_HOSP_NC_UPGRADE, ITEM_HOSP_NC_SOLVE];
 CHECKLIST_TRIGGERS[PROCESS_HOSP_CHECK_WAIT] = [ITEM_HOSP_WAIT_DATE, ITEM_HOSP_WAIT_DELAY, ITEM_HOSP_WAIT_SOLVE];
+CHECKLIST_TRIGGERS[PROCESS_HOSP_CHECK_WRAP] = [ITEM_HOSP_CHECK_RECAP, ITEM_HOSP_CHECK_SEND_LINK, ITEM_HOSP_CHECK_WRAP, ITEM_HOSP_WISH_WELL];
 
 // Buttons
 const ACTION_BUTTONS = [
@@ -182,6 +187,22 @@ const ACTION_BUTTONS = [
         categories: catArray(CATEGORY_UPDATE) },
     { name: "Spouse auth", note: "Added spouse auth for |spouse|",
         categories: catArray(CATEGORY_UPDATE) },
+    { name: "Ancil check", note: "Saved ancil check",
+        categories: catArray(CATEGORY_CLAIM) },
+    { name: "Benefit enquiry", note: "Benefit enquiry |claim|",
+        categories: catArray(CATEGORY_CLAIM) },
+    { name: "Digi claim", note: "Walked through claiming online",
+        categories: catArray(CATEGORY_CLAIM) },
+    { name: "How to", note: "How to claim",
+        categories: catArray(CATEGORY_CLAIM) },
+    { name: "Low benefit", note: "Follow up on |category| claim, lower benefit than expected",
+        categories: catArray(CATEGORY_CLAIM) },
+    { name: "Mail claims", note: "Approved for mail claims, MUST SEND CLAIM FORMS, MUST ADV MAIL CLAIM PROCESS",
+        categories: catArray(CATEGORY_CLAIM) },
+    { name: "Not paid", note: "Follow up on |category| claim, why not paid",
+        categories: catArray(CATEGORY_CLAIM) },
+
+
     { name: "Hosp check", note: "Hospital eligibility check\nPatient: |policy holder|\nHospital: \nItems: \nExcess: ",
         triggers: [PROCESS_HOSP_CHECK_START], categories: catArray(CATEGORY_HOSPITAL) }
 ];
@@ -257,6 +278,9 @@ CHECKLIST_ITEMS[ITEM_HOSP_CHECK_RECAP] = {text: "Recap hospital check"};
 CHECKLIST_ITEMS[ITEM_HOSP_CHECK_SEND_LINK] = {text: "Send GTH web link"};
 CHECKLIST_ITEMS[ITEM_HOSP_CHECK_WRAP] = {text: "Confirm eveything answered"};
 CHECKLIST_ITEMS[ITEM_HOSP_WISH_WELL] = {text: "Wish them well!"};
+CHECKLIST_ITEMS[ITEM_MAIL_CLAIM_WARNING] = {text: "Add warning to policy"};
+CHECKLIST_ITEMS[ITEM_MAIL_CLAIM_FORM] = {text: "Send mail claim form"};
+CHECKLIST_ITEMS[ITEM_MAIL_CLAIM_WALKTHROUGH] = {text: "Walk through mail claiming incl address"};
 
 let statsCompleted = [];
 let statsMissed = [];
@@ -379,7 +403,10 @@ function filterNoteContent() {
     .replaceAll(", MUST ADV IMPACTS", "")
     .replaceAll(", MUST RESET CALLBACK/LEAVE MESSAGE", "")
     .replaceAll("\nMUST ADV PRE-FILLED", "")
-    .replaceAll(", MUST OFFER SELF-SERVICE", "");
+    .replaceAll(", MUST OFFER SELF-SERVICE", "")
+    .replaceAll(", MUST SEND CLAIM FORMS", "")
+    .replaceAll(", MUST ADV MAIL CLAIM PROCESS", "");
+
 }
 
 function resetChecklist() {
@@ -669,6 +696,12 @@ function checklistItemTick(tick, element, index) {
                 break;
             case ITEM_TAX_SELF:
                 noteContent.value = noteContent.value.replaceAll("MUST OFFER SELF-SERVICE", "walked through downloading statement online");
+                break;
+            case ITEM_MAIL_CLAIM_FORM:
+                noteContent.value = noteContent.value.replaceAll("MUST SEND CLAIM FORMS", "sent forms");
+                break;
+            case ITEM_MAIL_CLAIM_WALKTHROUGH:
+                noteContent.value = noteContent.value.replaceAll("MUST ADV MAIL CLAIM PROCESS", "adv process & address");
                 break;
             default:
                 break;
