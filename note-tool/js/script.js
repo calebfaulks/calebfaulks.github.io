@@ -166,7 +166,7 @@ CHECKLIST_TRIGGERS[PROCESS_HOSP_CHECK_WAIT] = [ITEM_HOSP_WAIT_DATE, ITEM_HOSP_WA
 CHECKLIST_TRIGGERS[PROCESS_HOSP_CHECK_WRAP] = [ITEM_HOSP_CHECK_RECAP, ITEM_HOSP_CHECK_SEND_LINK, ITEM_HOSP_CHECK_WRAP, ITEM_HOSP_WISH_WELL];
 
 // Buttons
-const ACTION_BUTTONS = [
+const CASE_BUTTONS = [
     { name: "AGR", note: "Applied AGR, MUST READ AGR SCRIPT",
         triggers: [ITEM_AGR_SCRIPT], categories: catArray(CATEGORY_UPDATE, CATEGORY_PAYMENT) },
     { name: "DD", note: "Updated DD, MUST READ DD SCRIPT",
@@ -201,6 +201,8 @@ const ACTION_BUTTONS = [
         categories: catArray(CATEGORY_CLAIM) },
     { name: "Not paid", note: "Follow up on |category| claim, why not paid",
         categories: catArray(CATEGORY_CLAIM) },
+    { name: "Change", note: "Changed cover, MUST READ CHANGE SCRIPT, MUST ADV WAITS, MUST ADV UPCOMING PAYMENTS",
+        triggers: [PROCESS_COVER_CHANGE], categories: catArray(CATEGORY_COVER) },
 
 
     { name: "Hosp check", note: "Hospital eligibility check\nPatient: |policy holder|\nHospital: \nItems: \nExcess: ",
