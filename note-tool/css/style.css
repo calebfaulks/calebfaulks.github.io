@@ -42,7 +42,7 @@ body {
 	max-width: 600px;
 	height: 100%;
 	align-items: center;
-	background-color: var( --cf-color-lightest );
+	background-color: var( --cf-color-white );
 	display: flex;
 	flex-direction: column;
 }
@@ -53,14 +53,36 @@ body {
 	flex-direction: row;
 	justify-content: center;
 	flex-wrap: wrap;
+	gap: 5px;
 }
 
 .button-group button {
 	flex-grow: 1;
+	padding: 4px 8px;
+	border: none;
+	border-radius: 1000px;
+	background-color: #b0dfa6;
+	cursor: pointer;
+}
+
+.member-info {
+	margin-top: 10px;
+	margin-bottom: 5px;
 }
 
 #member-name {
 	flex-grow: 1;
+	padding: 2px 10px;
+	border: none;
+	border-radius: 3px;
+	background-color: var( --cf-color-lighter );
+}
+
+#id-check {
+	padding: 5px 10px;
+	border: none;
+	border-radius: 3px;
+	background-color: var( --cf-color-lighter );
 }
 
 .notes-box {
@@ -68,6 +90,11 @@ body {
 	height: 150px;
 	resize: vertical;
 	flex-shrink: 0;
+	margin: 0 0 5px;
+	padding: 5px 10px;
+	border: none;
+	border-radius: 3px;
+	background-color: var( --cf-color-lighter );
 }
 
 #checklist {
@@ -147,15 +174,29 @@ body {
 	width: 100%;
 	display: flex;
 	flex-direction: row;
+	gap: 5px;
+	margin: 5px 0px 5px;
 }
 
 .tab-button {
 	flex-grow: 1;
-	border: 1px solid var( --cf-color-darker );
-	border-radius: 5px 5px 0px 0px;
+	border: none;
+	border-radius: 5px 5px 5px 5px;
+	padding: 5px;
 }
 .tab-button.tab-active {
 	border-bottom-color: transparent;
+	border-radius: 5px 5px 0px 0px;
+}
+
+.tab-button:nth-of-type(1), .tab-content:nth-of-type(1) {
+	background-color: #ebbcdb;
+}
+.tab-button:nth-of-type(2), .tab-content:nth-of-type(2) {
+	background-color: #c9b3e7;
+}
+.tab-button:nth-of-type(3), .tab-content:nth-of-type(3) {
+	background-color: #95baf9;
 }
 
 .tabs-container {
@@ -164,7 +205,10 @@ body {
 
 .tab-content {
 	display: none;
+	box-sizing: border-box;
 	width: 100%;
+	padding: 5px;
+	border-radius: 5px;
 }
 
 .tab-content.tab-active {

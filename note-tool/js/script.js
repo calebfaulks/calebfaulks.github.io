@@ -7,7 +7,7 @@ const CATEGORY_UPDATE       = 1;
 const CATEGORY_CLAIM        = 2;
 const CATEGORY_COVER        = 3;
 const CATEGORY_PAYMENT      = 4;
-const CATEGORY_DEPENDANT    = 5;
+const CATEGORY_DEPENDENT    = 5;
 const CATEGORY_POLICY       = 6;
 const CATEGORY_CALL         = 7;
 const CATEGORY_TRANS_LOG    = 8;
@@ -89,38 +89,39 @@ const ITEM_MAIL_CLAIM_WALKTHROUGH   = 72;
 const ITEMS_END                     = 73;
 
 // Official process guide processes
-const PROCESS_ANCIL         = 1;
-const PROCESS_ANCIL_CLAIM   = 2;
-const PROCESS_AMB_ENQUIRY   = 3;
-const PROCESS_AMB_CLAIM     = 4;
-const PROCESS_WELCOME_CALL  = 5;
-const PROCESS_COVER_ENQUIRY = 6;
-const PROCESS_COVER_REVIEW  = 7;
-const PROCESS_COVER_CHANGE  = 8;
-const PROCESS_CANCELLATION  = 9;
-const PROCESS_QUOTE         = 10;
-const PROCESS_UPDATE_DD     = 11;
-const PROCESS_ONE_PAYMENT   = 12;
-const PROCESS_REFUND        = 13;
-const PROCESS_DEP_ADD       = 14;
-const PROCESS_DEP_REMOVE    = 15;
-const PROCESS_SUSPENSION    = 16;
-const PROCESS_RESUMPTION    = 17;
-const PROCESS_CARD_PROBLEM  = 18;
-const PROCESS_PENSION_CARD  = 19;
-const PROCESS_LOGIN_PROBLEM = 20;
-
-// Official process guide processes - hospital
 const PROCESSES_START                   = 500;
 
-const PROCESS_HOSP_CHECK_START          = PROCESSES_START + 1;
-const PROCESS_HOSP_CHECK_COVERED_HOSP   = PROCESSES_START + 2;
-const PROCESS_HOSP_CHECK_COVERED_MED    = PROCESSES_START + 3;
-const PROCESS_HOSP_CHECK_COVERED_CLAIM  = PROCESSES_START + 4;
-const PROCESS_HOSP_CHECK_INFO           = PROCESSES_START + 5;
-const PROCESS_HOSP_CHECK_NOT_COVERED    = PROCESSES_START + 6;
-const PROCESS_HOSP_CHECK_WAIT           = PROCESSES_START + 7;
-const PROCESS_HOSP_CHECK_WRAP           = PROCESSES_START + 8;
+const PROCESS_ANCIL         = PROCESSES_START + 1;
+const PROCESS_ANCIL_CLAIM   = PROCESSES_START + 2;
+const PROCESS_AMB_ENQUIRY   = PROCESSES_START + 3;
+const PROCESS_AMB_CLAIM     = PROCESSES_START + 4;
+const PROCESS_WELCOME_CALL  = PROCESSES_START + 5;
+const PROCESS_COVER_ENQUIRY = PROCESSES_START + 6;
+const PROCESS_COVER_REVIEW  = PROCESSES_START + 7;
+const PROCESS_COVER_CHANGE  = PROCESSES_START + 8;
+const PROCESS_CANCELLATION  = PROCESSES_START + 9;
+const PROCESS_QUOTE         = PROCESSES_START + 10;
+const PROCESS_UPDATE_DD     = PROCESSES_START + 11;
+const PROCESS_ONE_PAYMENT   = PROCESSES_START + 12;
+const PROCESS_REFUND        = PROCESSES_START + 13;
+const PROCESS_DEP_ADD       = PROCESSES_START + 14;
+const PROCESS_DEP_REMOVE    = PROCESSES_START + 15;
+const PROCESS_SUSPENSION    = PROCESSES_START + 16;
+const PROCESS_RESUMPTION    = PROCESSES_START + 17;
+const PROCESS_CARD_PROBLEM  = PROCESSES_START + 18;
+const PROCESS_PENSION_CARD  = PROCESSES_START + 19;
+const PROCESS_LOGIN_PROBLEM = PROCESSES_START + 20;
+
+// Official process guide processes - hospital
+
+const PROCESS_HOSP_CHECK_START          = PROCESSES_START + 21;
+const PROCESS_HOSP_CHECK_COVERED_HOSP   = PROCESSES_START + 22;
+const PROCESS_HOSP_CHECK_COVERED_MED    = PROCESSES_START + 23;
+const PROCESS_HOSP_CHECK_COVERED_CLAIM  = PROCESSES_START + 24;
+const PROCESS_HOSP_CHECK_INFO           = PROCESSES_START + 25;
+const PROCESS_HOSP_CHECK_NOT_COVERED    = PROCESSES_START + 26;
+const PROCESS_HOSP_CHECK_WAIT           = PROCESSES_START + 27;
+const PROCESS_HOSP_CHECK_WRAP           = PROCESSES_START + 28;
 
 const PROCESS_NAMES = [];
 PROCESS_NAMES[PROCESS_HOSP_CHECK_START]         = "Hospital check";
@@ -203,9 +204,27 @@ const CASE_BUTTONS = [
         categories: catArray(CATEGORY_CLAIM) },
     { name: "Change", note: "Changed cover, MUST READ CHANGE SCRIPT, MUST ADV WAITS, MUST ADV UPCOMING PAYMENTS",
         triggers: [PROCESS_COVER_CHANGE], categories: catArray(CATEGORY_COVER) },
+    { name: "Enquiry", note: "Cover enquiry |category|",
+        triggers: [PROCESS_COVER_ENQUIRY], categories: catArray(CATEGORY_COVER) },
+    { name: "Limit enquiry", note: "Enquiry remaining limits for |category|",
+        categories: catArray(CATEGORY_COVER) },
+    { name: "Quote", note: "Quoted |product|, MUST ADV 30 DAYS",
+        triggers: [PROCESS_QUOTE], categories: catArray(CATEGORY_COVER) },
+    { name: "Review", note: "Cover review - |reason|",
+        triggers: [PROCESS_COVER_REVIEW], categories: catArray(CATEGORY_COVER) },
+    { name: "1T payment", note: "Took one-time payment",
+        triggers: [PROCESS_ONE_PAYMENT], categories: catArray(CATEGORY_PAYMENT) },
+    { name: "Amount changed", note: "Enquiry why amount changed",
+        categories: catArray(CATEGORY_PAYMENT) },
+    { name: "Add", note: "Added |dependent| to policy, MUST ADV DEP WAITS, MUST ADV NEW CARDS, MUST ADV PREMIUMS DIFFERENCE",
+        categories: catArray(CATEGORY_DEPENDENT) },
+    { name: "Remove", note: "Removed |dependent| from policy, MUST ADV NEW CARDS, MUST ADV PREMIUMS DIFFERENCE",
+        categories: catArray(CATEGORY_DEPENDENT) },
+    { name: "Student", note: "Kept |dependent| on policy as student dep, MUST ADV STUDENT CRITERIA, MIGHT ADV NEW CARDS",
+        categories: catArray(CATEGORY_DEPENDENT) },
 
 
-    { name: "Hosp check", note: "Hospital eligibility check\nPatient: |policy holder|\nHospital: \nItems: \nExcess: ",
+    { name: "Hosp check", note: "Hospital eligibility check\nPatient: |policy holder|\nHospital: \nDate: \nItems: \nExcess: ",
         triggers: [PROCESS_HOSP_CHECK_START], categories: catArray(CATEGORY_HOSPITAL) }
 ];
 
@@ -258,7 +277,7 @@ CHECKLIST_ITEMS[ITEM_HOSP_MED_MEDIGAP] = {text: "Discuss/check medigap"};
 CHECKLIST_ITEMS[ITEM_HOSP_APR_RATE] = {text: "Covered to Medicare rate"};
 CHECKLIST_ITEMS[ITEM_HOSP_APR_OOPS] = {text: "Anything above that is an OOP"};
 CHECKLIST_ITEMS[ITEM_HOSP_APR_IFC] = {text: "Recommend IFC from anaesthetist"};
-CHECKLIST_ITEMS[ITEM_HOSP_APR_MEDIGAP] = {text: "Check anaesthetist medigap"};
+CHECKLIST_ITEMS[ITEM_HOSP_APR_MEDIGAP] = {text: "Check anaesthetist medigap/gapsure"};
 CHECKLIST_ITEMS[ITEM_HOSP_APR_PATH_RAD] = {text: "Path/Radio covered only to Medicare rate"};
 CHECKLIST_ITEMS[ITEM_HOSP_MED_APR_WRAP] = {text: "Check in with member"};
 CHECKLIST_ITEMS[ITEM_HOSP_OFFER_CLAIM] = {text: "Offer to walk through claiming"};
@@ -433,8 +452,8 @@ function addChecklistItem(item) {
         let insertContent = `
         <div class="checklist-item-dropdown">
             <div class="checklist-item-dropdown-heading" onclick="toggleChecklistItemDropdown(this)">
-                <button class="tick-button" onclick="checklistItemDropdownTick(true, this)">Y</button>
-                <button class="x-button" onclick="checklistItemDropdownTick(false, this)">N</button>
+                <button class="tick-button" onclick="checklistItemDropdownTick(true, this)" title="Complete all">Y</button>
+                <button class="x-button" onclick="checklistItemDropdownTick(false, this)" title="Ignore all">N</button>
                 <span>${PROCESS_NAMES[item]}</span>
             </div>
             <div class="checklist-item-dropdown-content">`;
@@ -443,8 +462,8 @@ function addChecklistItem(item) {
             let cur = CHECKLIST_TRIGGERS[item][i];
             insertContent += `
             <div class="checklist-item">
-                <button class="tick-button" onclick="checklistItemTick(true, this, ${cur})">Y</button>
-                <button class="x-button" onclick="checklistItemTick(false, this, ${cur})">N</button>
+                <button class="tick-button" onclick="checklistItemTick(true, this, ${cur})" title="Complete">Y</button>
+                <button class="x-button" onclick="checklistItemTick(false, this, ${cur})" title="Ignore">N</button>
                 <span>${CHECKLIST_ITEMS[cur].text}</span>
             </div>`;
         }
@@ -456,8 +475,8 @@ function addChecklistItem(item) {
         currentCall.callStats[item] = STAT_MISSED;
         checklist.innerHTML += `
         <div class="checklist-item">
-            <button class="tick-button" onclick="checklistItemTick(true, this, ${item})">Y</button>
-            <button class="x-button" onclick="checklistItemTick(false, this, ${item})">N</button>
+            <button class="tick-button" onclick="checklistItemTick(true, this, ${item})" title="Complete">Y</button>
+            <button class="x-button" onclick="checklistItemTick(false, this, ${item})" title="Ignore">N</button>
             <span>${CHECKLIST_ITEMS[item].text}</span>
         </div>`;
     }
