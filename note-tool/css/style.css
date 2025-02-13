@@ -13,8 +13,8 @@
 	--cf-color-lighter: #CCC;
 	--cf-color-lightest: #EEE;
 	--cf-color-white: #FFF;
-	--cf-color-confirm: #0a9e1e;
-	--cf-color-cancel: #af0d0d;
+	--cf-color-confirm: #75c760;
+	--cf-color-cancel: #d35454;
 
 	/* font */
 	--cf-font-size: 8;
@@ -32,13 +32,14 @@
 
 /* ELEMENTS */
 
-html, body {
+html {
 	margin: 0;
 	padding: 0;
 }
 
 body {
 	margin: 0 auto;
+	padding: 15px;
 	max-width: 600px;
 	height: 100%;
 	align-items: center;
@@ -167,7 +168,35 @@ body {
 }
 
 #schedule-section {
-	margin-bottom: 20px;
+	flex-direction: column;
+	gap: 10px;
+}
+
+.schedule-item {
+	display: flex;
+	flex-direction: row;
+	gap: 5px;
+}
+
+.minus-button, .plus-button {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 30px;
+	height: 30px;
+	padding: 0px;
+	border: none;
+	border-radius: 3px;
+}
+
+.time-picker, .schedule-item-name {
+	display: inline-flex;
+	min-height: 30px;
+	box-sizing: border-box;
+	padding: 5px 10px;
+	align-items: center;
+	border: none;
+	border-radius: 3px;
 }
 
 .tabs-headings {
@@ -175,7 +204,7 @@ body {
 	display: flex;
 	flex-direction: row;
 	gap: 5px;
-	margin: 5px 0px 5px;
+	margin: 0px 0px 5px;
 }
 
 .tab-button {
@@ -207,12 +236,13 @@ body {
 	display: none;
 	box-sizing: border-box;
 	width: 100%;
+	margin-bottom: 20px;
 	padding: 5px;
 	border-radius: 5px;
 }
 
 .tab-content.tab-active {
-	display: block;
+	display: flex;
 }
 
 table {
