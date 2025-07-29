@@ -14,15 +14,26 @@
 	--cf-color-lightest: #EEE;
 	--cf-color-white: #FFF;
 
+	--cf-color-bg: var(--cf-color-lightest);
+	--cf-color-text: var(--cf-color-darker);
+
 	/* font */
 	--cf-font-size: 8;
+}
+
+/* DARK THEME */
+@media (prefers-color-scheme: dark) {
+	:root {
+		--cf-color-bg: var(--cf-color-darker);
+		--cf-color-text: var(--cf-color-lighter);
+	}
 }
 
 
 /* GLOBAL */
 
 :root {
-	color: var( --cf-color-darker );
+	color: var( --cf-color-text );
 	font-family: 'Kanit', sans-serif;
 }
 
@@ -36,7 +47,7 @@ html, body {
 
 body {
 	align-items: center;
-	background-color: var( --cf-color-lightest );
+	background-color: var( --cf-color-bg );
 	display: flex;
 	justify-content: center;
 }
@@ -61,6 +72,12 @@ a, a:visited {
 	padding: 0px 80px;
 }
 
+.nav-category-inner {
+	display: flex;
+	flex-direction: column;
+	padding: 0;
+}
+
 .nav-category-heading {
 	color: var( --cf-color-medium );
 	cursor: default;
@@ -73,14 +90,14 @@ a, a:visited {
 	display: flex;
 	font-weight: 300;
 	letter-spacing: 0.075em;
-	transition: opacity 0.2s ease-in-out 0.25s;
+	/* transition: opacity 0.2s ease-in-out 0.25s; */
 }
 
 .nav-link:not(:last-child) {
 	margin-bottom: 2em;
 }
 
-nav:has(.nav-link:hover) .nav-link:not(:hover) {
+nav:is(:has(.nav-category-inner:hover)) .nav-link:not(:hover) {
 	opacity: 0.4;
-	transition: opacity 0.2s ease-in-out 0s;
+	/* transition: opacity 0.2s ease-in-out 0s; */
 }
