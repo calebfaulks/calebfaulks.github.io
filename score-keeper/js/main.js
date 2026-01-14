@@ -7,6 +7,13 @@ function page_load() {
         sec.querySelector(".left-button").addEventListener("click", team_left);
         sec.querySelector(".right-button").addEventListener("click", team_right);
     });
+
+    // request a wake lock
+    try {
+    let wakeLock = navigator.wakeLock.request("screen");
+    } catch (err) {
+    
+    }
 }
 
 function score_add(e) {
